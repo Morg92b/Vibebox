@@ -7,12 +7,14 @@ const postSchema = mongoose.Schema(
             required: true,
         },
         author: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
             required: true,
         },
         likers: {
-            type: [String],
-        }
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: "User",
+        },
     },
     {
         timestamps: true,

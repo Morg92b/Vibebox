@@ -1,13 +1,14 @@
 const express = require("express");
-const { set } = require("mongoose");
 const { setPosts, getPosts, editPost, deletePost, likePost, dislikePost } = require("../controllers/post.controller");
+const authenticateUser = require("../middlewares/auth.middleware");
 const router = express.Router();
 
-router.get("/", getPosts);
-router.post("/", setPosts);
-router.put("/:id", editPost);
-router.delete("/:id", deletePost);
-router.patch("/like-post/:id", likePost);
-router.patch("/dislike-post/:id", dislikePost);
+// Routes
+router.get("/", getPosts); 
+router.post("/", authenticateUser, setPosts); 
+router.put("/:id", authenticateUser, editPost); 
+router.delete("/:id", authenticateUser, deletePost); 
+router.patch("/like-post/:id", authenticateUser, likePost); 
+router.patch("/dislike-post/:id", authenticateUser, dislikePost);
 
 module.exports = router;

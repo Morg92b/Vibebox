@@ -46,7 +46,12 @@ module.exports.login = async (req, res) => {
             return res.status(400).json({ message: "Mot de passe incorrect." });
         }
 
-        const token = jwt.sign({ id: user._id }, "secret_key", { expiresIn: "1h" });
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
         res.status(200).json({ message: "Connexion réussie", token });
     } catch (error) {
         res.status(500).json({ message: "Erreur lors de la connexion", error: error.message });
@@ -56,6 +61,10 @@ module.exports.login = async (req, res) => {
 module.exports.editUser = async (req, res) => {
     try {
         const { username, email } = req.body;
+
+        if (String(req.params.id) !== String(req.user._id)) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à modifier cet utilisateur" });
+        }
 
         // Vérification de l'unicité du username
         if (username) {
@@ -96,6 +105,10 @@ module.exports.deleteUser = async (req, res) => {
 
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "ID invalide" });
+        }
+
+        if (String(userId) !== String(req.user._id)) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à supprimer cet utilisateur" });
         }
 
         const user = await UserModel.findById(userId);

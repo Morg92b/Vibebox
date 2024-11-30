@@ -3,21 +3,32 @@ const PostModel = require("../models/post.model");
 const postModel = require("../models/post.model");
 
 module.exports.getPosts = async (req, res) => {
-    const posts = await PostModel.find();
-    res.status(200).json(posts)
+    try {
+        const posts = await PostModel.find()
+            .populate("author", "username email") 
+            .populate("likers", "username");
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(400).json({ message: "Erreur lors de la récupération des posts", error: error.message });
+    }
 };
+
 
 module.exports.setPosts = async (req, res) => {
-    if (!req.body.message) {
-        res.status(400).json({ message: "Merci d'ajouter un message" });
-    }
-
-    const post = await PostModel.create({
-        message: req.body.message,
-        author: req.body.author,
-    })
-    res.status(200).json(post);
-};
+    try {
+        if (!req.body.message) {
+            res.status(400).json({ message: "Merci d'ajouter un message" });
+        }
+        
+        const post = await PostModel.create({
+            message: req.body.message,
+            author: req.user._id,
+        });
+        res.status(200).json(post);
+    } catch (error) {
+        res.status(400).json({ message: "Erreur lors de la création", error: error.message });
+        }
+    };
 
 module.exports.editPost = async (req, res) => {
     try {
@@ -26,6 +37,10 @@ module.exports.editPost = async (req, res) => {
 
         if (!post) {
             return res.status(404).json({ message: "Ce post n'existe pas" });
+        }
+        
+        if (String(post.author) !== String(req.user._id)) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à modifier ce message" });
         }
 
         // Mettre à jour le post
@@ -50,6 +65,10 @@ module.exports.deletePost = async (req, res) => {
             return res.status(404).json({ message: "Ce post n'existe pas"});
         }
 
+        if (String(post.author) !== String(req.user._id)) {
+            return res.status(403).json({ message: "Vous n'êtes pas autorisé à supprimer ce message" });
+        }
+
         await PostModel.findByIdAndDelete(req.params.id);
 
         res.status(200).json("Message supprimé " + post);
@@ -61,26 +80,36 @@ module.exports.deletePost = async (req, res) => {
 
 module.exports.likePost = async (req, res) => {
     try {
-        
-        await PostModel.findByIdAndUpdate(
+        const post = await PostModel.findByIdAndUpdate(
             req.params.id,
-            { $addToSet: { likers: req.body.userID } },
-            {new: true}
-        ).then((data) => res.status(200).send(data));
+            { $addToSet: { likers: req.user._id } },
+            { new: true }
+        );
+
+        if (!post) {
+            return res.status(404).json({ message: "Post non trouvé" });
+        }
+
+        res.status(200).json(post);
     } catch (error) {
-        res.status(400).json(error)
+        res.status(400).json({ message: "Erreur lors du like", error: error.message });
     }
 };
 
 module.exports.dislikePost = async (req, res) => {
     try {
-        
-        await PostModel.findByIdAndUpdate(
+        const post = await PostModel.findByIdAndUpdate(
             req.params.id,
-            { $pull: { likers: req.body.userID } },
-            {new: true}
-        ).then((data) => res.status(200).send(data));
+            { $pull: { likers: req.user._id } },
+            { new: true }
+        );
+
+        if (!post) {
+            return res.status(404).json({ message: "Post non trouvé" });
+        }
+
+        res.status(200).json(post);
     } catch (error) {
-        res.status(400).json(error)
+        res.status(400).json({ message: "Erreur lors du dislike", error: error.message });
     }
 };
