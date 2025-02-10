@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // NAMESPACES
 app.use("/post", require("./routes/post.routes"));
-app.use("/user", require("./routes/user.routes"));
+app.use("/api/auth", require("./routes/user.routes"));
 
 
 // Start a server

@@ -1,6 +1,5 @@
 const { deleteModel } = require("mongoose");
 const PostModel = require("../models/post.model");
-const postModel = require("../models/post.model");
 
 module.exports.getPosts = async (req, res) => {
     try {
