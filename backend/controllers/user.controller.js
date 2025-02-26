@@ -229,3 +229,23 @@ module.exports.logout = async (req, res) => {
         res.status(500).json({ message: "Erreur déconnexion", error: error.message });
     }
 };
+
+module.exports.checkSpotifyLink = async (req, res) => {
+    const userId = req.params.userId; // Récupérer l'ID passé dans l'URL
+
+    try {
+        const user = await UserModel.findById(new mongoose.Types.ObjectId(userId)); // Utiliser new ici
+        if (!user) {
+            return res.status(404).json({ error: "Utilisateur non trouvé" });
+        }
+
+        if (!user.spotifyAccessToken || !user.spotifyId) {
+            return res.json({ linked: false, message: "Utilisateur non connecté à Spotify" });
+        }
+
+        return res.json({ linked: true, message: "Utilisateur connecté à Spotify", spotifyId: user.spotifyId });
+    } catch (error) {
+        console.error("Erreur lors de la vérification du lien Spotify :", error.message);
+        res.status(500).json({ error: "Erreur serveur" });
+    }
+};

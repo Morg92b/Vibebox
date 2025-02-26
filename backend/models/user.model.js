@@ -8,7 +8,6 @@ const userSchema = mongoose.Schema(
             required: true,
             unique: true
         },
-        
         email: {
             type: String,
             required: true,
@@ -21,6 +20,18 @@ const userSchema = mongoose.Schema(
         isEmailconfirmed: {
             type: Boolean,
             default: false,
+        },
+        spotifyAccessToken: {
+            type: String,
+            default: null,
+        },
+        spotifyRefreshToken: {
+            type: String,
+            default: null,
+        },
+        spotifyId: {
+            type: String,
+            default: null,
         },
     },
     {

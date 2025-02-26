@@ -18,7 +18,7 @@ const authenticateUser = async (req, res, next) => {
         const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({ message: "User non trouvé." });
+            return res.status(404).json({ message: "Utilisateur non trouvé." });
         }
 
         if (!user.isEmailconfirmed) {
