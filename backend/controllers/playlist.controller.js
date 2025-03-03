@@ -75,21 +75,49 @@ module.exports.updatePlaylist = async (req, res) => {
 
 // Récupérer les playlists d'un utilisateur
 module.exports.getUserPlaylists = async (req, res) => {
-    const userId = req.user.id; // Récupérer l'ID de l'utilisateur connecté
-
     try {
+        const userId = req.user?.id;
+        if (!userId) {
+            return res.status(400).json({ error: "ID utilisateur manquant" });
+        }
+
         const user = await User.findById(userId);
         if (!user || !user.spotifyAccessToken) {
             return res.status(401).json({ error: "Utilisateur non connecté à Spotify" });
         }
 
-        const response = await axios.get("https://api.spotify.com/v1/me/playlists", {
-            headers: { Authorization: `Bearer ${user.spotifyAccessToken}` },
-        });
+        let allPlaylists = [];
+        let nextUrl = "https://api.spotify.com/v1/me/playlists?limit=50";
 
-        res.json(response.data);
+        while (nextUrl) {
+            const response = await axios.get(nextUrl, {
+                headers: { Authorization: `Bearer ${user.spotifyAccessToken}` },
+            });
+
+            console.log("Réponse de l'API Spotify :", {
+                status: response.status,
+                data: {
+                    total: response.data.total,
+                    items: response.data.items.map(playlist => playlist.name),
+                    next: response.data.next,
+                },
+            });
+
+            allPlaylists = allPlaylists.concat(response.data.items);
+            nextUrl = response.data.next;
+        }
+
+        res.json({
+            total: allPlaylists.length,
+            items: allPlaylists,
+        });
     } catch (error) {
         console.error("Erreur lors de la récupération des playlists :", error.response?.data || error.message);
-        res.status(400).json({ error: "Impossible de récupérer les playlists" });
+
+        if (error.response?.status === 401) {
+            return res.status(401).json({ error: "Token Spotify expiré ou invalide" });
+        }
+
+        res.status(500).json({ error: "Impossible de récupérer les playlists" });
     }
 };
