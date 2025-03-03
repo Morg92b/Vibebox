@@ -13,7 +13,7 @@ module.exports.redirectToSpotify = (req, res) => {
     res.redirect(authorizationUrl);
 };
 
-// Function pour unir les deux comptes
+// Fonction pour unir les deux comptes
 module.exports.handleSpotifyCallback = async (req, res) => {
     const code = req.query.code;
     const userId = req.query.state;
@@ -40,7 +40,7 @@ module.exports.handleSpotifyCallback = async (req, res) => {
         const spotifyId = userProfileResponse.data.id;
 
         // Mettre à jour l'utilisateur dans la BDD
-        const user = await UserModel.findById(new mongoose.Types.ObjectId(userId));
+        const user = await UserModel.findById(userId); // Suppression de mongoose.Types.ObjectId()
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
@@ -62,7 +62,7 @@ module.exports.unlinkSpotifyAccount = async (req, res) => {
     const userId = req.body.userId;
 
     try {
-        const user = await UserModel.findById(new mongoose.Types.ObjectId(userId));
+        const user = await UserModel.findById(userId); // Suppression de mongoose.Types.ObjectId()
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }

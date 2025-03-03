@@ -234,7 +234,7 @@ module.exports.checkSpotifyLink = async (req, res) => {
     const userId = req.params.userId; // Récupérer l'ID passé dans l'URL
 
     try {
-        const user = await UserModel.findById(new mongoose.Types.ObjectId(userId)); // Utiliser new ici
+        const user = await UserModel.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
