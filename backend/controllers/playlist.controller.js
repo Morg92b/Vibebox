@@ -1,5 +1,6 @@
 const axios = require("axios");
 const User = require("../models/user.model");
+const Playlist = require("../models/playlist.model");
 
 // Créer une playlist sur Spotify
 module.exports.createPlaylist = async (req, res) => {
@@ -119,5 +120,62 @@ module.exports.getUserPlaylists = async (req, res) => {
         }
 
         res.status(500).json({ error: "Impossible de récupérer les playlists" });
+    }
+};
+
+module.exports.postUserPlaylist = async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        const { playlistId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ error: "ID utilisateur manquant" });
+        }
+
+        if (!playlistId) {
+            return res.status(400).json({ error: "ID de la playlist manquant" });
+        }
+
+        const user = await User.findById(userId);
+        if (!user || !user.spotifyAccessToken) {
+            return res.status(401).json({ error: "Utilisateur non connecté à Spotify" });
+        }
+
+        // Récupération des infos de la playlist via Spotify
+        const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+            headers: { Authorization: `Bearer ${user.spotifyAccessToken}` },
+        });
+
+        const playlistData = response.data;
+
+        // Vérifier si la playlist est déjà enregistrée pour cet utilisateur
+        let existingPlaylist = await Playlist.findOne({ spotifyId: playlistData.id, user: userId });
+
+        if (existingPlaylist) {
+            return res.status(400).json({ error: "Cette playlist est déjà enregistrée." });
+        }
+
+        // Création et sauvegarde de la playlist
+        const newPlaylist = new Playlist({
+            user: userId, 
+            spotifyId: playlistData.id,
+            name: playlistData.name,
+            description: playlistData.description,
+            imageUrl: playlistData.images?.[0]?.url || "",
+            tracksCount: playlistData.tracks.total,
+        });
+
+        await newPlaylist.save();
+
+        res.status(201).json({ message: "Playlist enregistrée avec succès", playlist: newPlaylist });
+
+    } catch (error) {
+        console.error("Erreur lors de l'enregistrement de la playlist :", error.response?.data || error.message);
+
+        if (error.response?.status === 401) {
+            return res.status(401).json({ error: "Token Spotify expiré ou invalide" });
+        }
+
+        res.status(500).json({ error: "Impossible d'enregistrer la playlist" });
     }
 };
