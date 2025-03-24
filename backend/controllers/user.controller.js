@@ -275,8 +275,8 @@ module.exports.getUserById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (!id) {
-            return res.status(400).json({ error: "ID requis" });
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "ID utilisateur invalide." });
         }
 
         const user = await UserModel.findById(id);
