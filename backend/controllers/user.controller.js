@@ -249,3 +249,24 @@ module.exports.checkSpotifyLink = async (req, res) => {
         res.status(500).json({ error: "Erreur serveur" });
     }
 };
+
+module.exports.getUser = async (req, res) => {
+    try {
+        const { username } = req.query;
+        
+        if (!username) {
+            return res.status(400).json({ error: "Le nom de l'utilisateur est requis" });
+        }
+
+        const user = await UserModel.findOne({ username: new RegExp(username, "i") });
+
+        if (!user) {
+            return res.status(404).json({ error: "Utilisateur non trouvé." });
+        }
+
+        return res.json(user);
+    } catch (error) {
+        console.error("Erreur lors de la recherche de l'utilisateur :", error);
+        return res.status(500).json({ error: "Erreur serveur." });
+    }
+};

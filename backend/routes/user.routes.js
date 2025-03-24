@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login, editUser, deleteUser, logout, checkSpotifyLink } = require("../controllers/user.controller");
+const { register, login, editUser, deleteUser, logout, checkSpotifyLink, getUser } = require("../controllers/user.controller");
 const authenticateUser = require("../middlewares/auth.middleware");
 const { confirmEmail } = require("../controllers/email.controllers");
 const router = express.Router();
@@ -8,6 +8,7 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.get("/confirm-email", confirmEmail);
+router.get("/searchuser", getUser);
 
 // Routes sécurisées
 router.put("/update/:id", authenticateUser, editUser);
