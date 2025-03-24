@@ -1,6 +1,7 @@
 const axios = require("axios");
 const User = require("../models/user.model");
 const Playlist = require("../models/playlist.model");
+const mongoose = require("mongoose");
 
 // Créer une playlist sur Spotify
 module.exports.createPlaylist = async (req, res) => {
@@ -177,5 +178,84 @@ module.exports.postUserPlaylist = async (req, res) => {
         }
 
         res.status(500).json({ error: "Impossible d'enregistrer la playlist" });
+    }
+};
+
+module.exports.likePlaylist = async (req, res) => {
+    const { userId, playlistId } = req.body;
+
+    try {
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "ID utilisateur invalide." });
+        }
+        // Récupérer l'utilisateur
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "Utilisateur non trouvé" });
+        }
+
+        // Vérifier si la playlist existe
+
+        if (!mongoose.Types.ObjectId.isValid(playlistId)) {
+            return res.status(400).json({ error: "ID playlist invalide." });
+        }
+        const playlist = await Playlist.findById(playlistId);
+        if (!playlist) {
+            return res.status(404).json({ error: "Playlist non trouvée" });
+        }
+
+        // Vérifier si l'utilisateur a déjà liké la playlist
+        if (playlist.likes.includes(userId)) {
+            return res.status(400).json({ error: "Vous avez déjà liké cette playlist" });
+        }
+
+        // Ajouter l'utilisateur à la liste des likes
+        playlist.likes.push(userId);
+        await playlist.save();
+
+        res.status(200).json({ message: "Playlist likée avec succès" });
+    } catch (error) {
+        console.error("Erreur lors du like de la playlist :", error.message);
+        res.status(500).json({ error: "Impossible de liker la playlist" });
+    }
+};
+
+module.exports.unlikePlaylist = async (req, res) => {
+    try {
+        const { userId, playlistId } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "ID utilisateur invalide." });
+        }
+        // Récupérer l'utilisateur
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "Utilisateur non trouvé" });
+        }
+
+        // Vérifier si la playlist existe
+        if (!mongoose.Types.ObjectId.isValid(playlistId)) {
+            return res.status(400).json({ error: "ID playlist invalide." });
+        }
+
+        const playlist = await Playlist.findById(playlistId);
+        if (!playlist) {
+            return res.status(404).json({ error: "Playlist non trouvée" });
+        }
+
+        // Vérifier si l'utilisateur a déjà liké la playlist
+        if (!playlist.likes.includes(userId)) {
+            return res.status(400).json({ error: "Vous n'avez pas liké cette playlist" });
+        }
+
+        // Retirer l'utilisateur de la liste des likes
+        playlist.likes.pull(userId);
+        await playlist.save();
+
+        res.status(200).json({ message: "Like retiré de la playlist avec succès" });
+    } catch (error) {
+        console.error("Erreur lors du retrait du like :", error.message);
+        res.status(500).json({ error: "Impossible de retirer le like de la playlist" });
     }
 };
