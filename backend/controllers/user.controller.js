@@ -270,3 +270,24 @@ module.exports.getUser = async (req, res) => {
         return res.status(500).json({ error: "Erreur serveur." });
     }
 };
+
+module.exports.getUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ error: "ID requis" });
+        }
+
+        const user = await UserModel.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ error: "Utilisateur non trouvé." });
+        }
+
+        return res.json(user);
+    } catch (error) {
+        console.error("Erreur lors de la récupération de l'utilisateur :", error);
+        return res.status(500).json({ error: "Erreur serveur." });
+    }
+};
