@@ -2,6 +2,9 @@
     <div class="home-wrapper">
         <Background />
         <div class="content-container">
+            <div class="logo">
+                <img :src="vibox" alt="logo">
+            </div>
             <Transition name="fade">
                 <div class="welcome-text" v-if="showText">
                     <span class="letter" v-for="(letter, index) in text" :key="index"
@@ -25,6 +28,7 @@ import { ref, onMounted } from 'vue';
 import Background from '@/components/Background.vue';
 import Button from '@/components/button.vue';
 import Music from '@/components/music.vue';
+import vibox from '@/assets/vibox.png'
 
 const text = ref('Welcome to Vibebox'.split(''));
 const showText = ref(false);
@@ -35,7 +39,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Reset global */
 body,
 html {
     margin: 0;
@@ -62,6 +65,19 @@ html {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -50px;
+}
+
+.logo img {
+    width: 200px;
+    height: auto;
+    max-width: 100%;
 }
 
 .music-button-container {
