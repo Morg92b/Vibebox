@@ -259,3 +259,14 @@ module.exports.unlikePlaylist = async (req, res) => {
         res.status(500).json({ error: "Impossible de retirer le like de la playlist" });
     }
 };
+
+module.exports.getAllPlaylists = async (req, res) => {
+    try {
+        const playlists = await Playlist.find().sort({ createdAt: -1 });
+
+        res.status(200).json(playlists);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des playlists :", error.message);
+        res.status(500).json({ error: "Impossible de récupérer les playlists" });
+    }
+};

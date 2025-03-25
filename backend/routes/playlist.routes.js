@@ -1,5 +1,5 @@
 const express = require("express");
-const { createPlaylist, deletePlaylist, updatePlaylist, getUserPlaylists, postUserPlaylist, likePlaylist, unlikePlaylist } = require("../controllers/playlist.controller");
+const { createPlaylist, deletePlaylist, updatePlaylist, getUserPlaylists, postUserPlaylist, likePlaylist, unlikePlaylist, getAllPlaylists } = require("../controllers/playlist.controller");
 const authenticateUser = require("../middlewares/auth.middleware");
 
 const router = express.Router();
@@ -11,5 +11,6 @@ router.get("/", authenticateUser, getUserPlaylists);
 router.post("/post", authenticateUser, postUserPlaylist);
 router.patch("/like-playlist", authenticateUser, likePlaylist);
 router.patch("/unlike", authenticateUser, unlikePlaylist);
+router.get("/getAllPlaylist", getAllPlaylists);
 
 module.exports = router;
