@@ -1,7 +1,11 @@
 <template>
     <div class="login-box">
-        <p>Login</p>
+        <p>Sign-up</p>
         <form @submit.prevent="handleSubmit">
+            <div class="user-box">
+                <input v-model="localUsername" required name="username" type="text">
+                <label>Username</label>
+            </div>
             <div class="user-box">
                 <input v-model="localEmail" required name="email" type="text">
                 <label>Email</label>
@@ -9,6 +13,10 @@
             <div class="user-box">
                 <input v-model="localPassword" required name="password" type="password">
                 <label>Password</label>
+            </div>
+            <div class="user-box">
+                <input v-model="localconfirmpassword" required name="passwordConfirm" type="password">
+                <label>Confirm Password</label>
             </div>
             <button type="submit">
                 <span></span>
@@ -19,8 +27,8 @@
                 Submit
             </button>
         </form>
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <p>Don't have an account? <router-link to="/register" class="a2">Sign up!</router-link></p>
+        <p v-if="localErrorMessage" class="error-message">{{ localErrorMessage }}</p>
+        <p>Already have an account? <router-link to="/login" class="a2">Sign-in!</router-link></p>
     </div>
 </template>
 
@@ -28,31 +36,50 @@
 import { ref, watchEffect } from 'vue';
 
 const props = defineProps({
+    username: String,
     email: String,
     password: String,
+    confirmpassword: String,
     errorMessage: String
 });
 
-const emits = defineEmits(['update:email', 'update:password', 'submit']);
+const emits = defineEmits(['update:username', 'update:email', 'update:password', 'update:confirmpassword', 'submit']);
 
+const localUsername = ref(props.username);
 const localEmail = ref(props.email);
 const localPassword = ref(props.password);
+const localconfirmpassword = ref(props.confirmpassword);
+const localErrorMessage = ref(props.errorMessage);
 
 watchEffect(() => {
     localEmail.value = props.email;
+    localUsername.value = props.username;
     localPassword.value = props.password;
+    localconfirmpassword.value = props.confirmpassword;
+    localErrorMessage.value = props.errorMessage;
 });
 
 const handleSubmit = () => {
     console.log('Soumission du formulaire avec les valeurs :', {
+        username: localUsername.value,
         email: localEmail.value,
-        password: localPassword.value
+        password: localPassword.value,
+        confirmpassword: localconfirmpassword.value
     });
+
+    emits('update:username', localUsername.value);
     emits('update:email', localEmail.value);
     emits('update:password', localPassword.value);
-    emits('submit');
+    emits('update:confirmpassword', localconfirmpassword.value);
+    emits('submit', {
+        username: localUsername.value,
+        email: localEmail.value,
+        password: localPassword.value,
+        confirmpassword: localconfirmpassword.value
+    });
 };
 </script>
+
 
 <style scoped>
 /* Styles existants */

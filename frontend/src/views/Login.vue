@@ -1,4 +1,5 @@
 <template>
+    <Background />
     <div class="home-page">
         <LoginCard :email="email" :password="password" :errorMessage="errorMessage" @update:email="email = $event"
             @update:password="password = $event" @submit="onSubmit" :class="{ 'fade-in': true, 'show': isMounted }" />
@@ -11,6 +12,7 @@
 import { ref, onMounted } from 'vue';
 import LoginCard from '@/components/logincard.vue';
 import { useRouter } from 'vue-router';
+import Background from '@/components/Background.vue';
 
 const email = ref('');
 const password = ref('');

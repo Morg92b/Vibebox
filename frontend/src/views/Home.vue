@@ -130,16 +130,16 @@ html {
         text-shadow:
             0 0 5px #fff,
             0 0 10px #fff,
-            0 0 20px #0ff,
-            0 0 30px #0ff;
+            0 0 20px #1a5e9c,
+            0 0 30px #1a5e9c;
     }
 
     to {
         text-shadow:
             0 0 10px #fff,
             0 0 20px #fff,
-            0 0 30px #0ff,
-            0 0 40px #0ff;
+            0 0 30px #1a5e9c,
+            0 0 40px #1a5e9c;
     }
 }
 
