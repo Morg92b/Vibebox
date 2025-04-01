@@ -265,4 +265,11 @@ const handleSubmit = () => {
 .error-message {
     color: #fff;
 }
+
+@media (max-width: 992px) {
+    .login-box {
+        width: 350px;
+        margin-top: -150px;
+    }
+}
 </style>

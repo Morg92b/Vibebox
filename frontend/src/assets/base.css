@@ -1,4 +1,9 @@
 /* color palette from <https://github.com/vuejs/theme> */
+button:focus,
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -83,4 +88,21 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+/* Reset des états interactifs */
+button, [role="button"] {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Reset des animations indésirables */
+svg, path {
+  transform-box: fill-box;
+  transform-origin: center;
 }

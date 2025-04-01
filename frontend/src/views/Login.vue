@@ -1,10 +1,12 @@
 <template>
-    <Background />
-    <div class="home-page">
-        <LoginCard :email="email" :password="password" :errorMessage="errorMessage" @update:email="email = $event"
-            @update:password="password = $event" @submit="onSubmit" :class="{ 'fade-in': true, 'show': isMounted }" />
-    </div>
-    <div>
+    <div class="app-layout">
+        <Navbar />
+        <Background />
+        <main class="main-content">
+            <LoginCard :email="email" :password="password" :errorMessage="errorMessage" @update:email="email = $event"
+                @update:password="password = $event" @submit="onSubmit"
+                :class="{ 'fade-in': true, 'show': isMounted }" />
+        </main>
     </div>
 </template>
 
@@ -13,6 +15,7 @@ import { ref, onMounted } from 'vue';
 import LoginCard from '@/components/logincard.vue';
 import { useRouter } from 'vue-router';
 import Background from '@/components/Background.vue';
+import Navbar from '@/components/navbar.vue';
 
 const email = ref('');
 const password = ref('');
@@ -54,5 +57,16 @@ const onSubmit = async () => {
 
 .fade-in.show {
     opacity: 1;
+}
+
+.app-layout {
+    position: relative;
+    min-height: 100vh;
+}
+
+.main-content {
+    padding-top: 950px;
+    position: relative;
+    z-index: 1;
 }
 </style>

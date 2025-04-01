@@ -7,20 +7,6 @@
   font-weight: normal;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
 @media (min-width: 1024px) {
   body {
     display: flex;
@@ -32,4 +18,37 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+}
+
+
+/* Supprime les effets de survol par défaut */
+a, button, .action_btn {
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+/* Supprime la couleur verte au survol */
+a:hover, button:hover {
+  color: inherit;
+  background-color: transparent;
+}
+
+/* Style pour les boutons action */
+.action_btn, .action_btn:hover {
+  background-color: #1a5e9c !important;
+  color: #fff !important;
+}
+
+/* Correction pour les liens dans la navbar */
+.navbar a:hover {
+  color: #1a5e9c !important;
+  background-color: transparent !important;
+}
+/* Dans base.css ou main.css */
+.svg-inline--fa {
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+  color: inherit !important; /* Force la couleur héritée */
 }
