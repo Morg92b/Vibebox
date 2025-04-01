@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from './authStore';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5500";
 
 export const login = async (credentials, authStore, router) => {
     try {

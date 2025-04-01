@@ -12,14 +12,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import LoginCard from '@/components/logincard.vue';
-import { useRouter } from 'vue-router';
-import Background from '@/components/Background.vue';
 import Navbar from '@/components/navbar.vue';
+import LoginCard from '@/components/logincard.vue';
+import { login } from '../stores/authService';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/authStore';
+import Background from '@/components/Background.vue';
 
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
+const authStore = useAuthStore();
 const router = useRouter();
 const isMounted = ref(false);
 

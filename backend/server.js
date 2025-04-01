@@ -3,6 +3,7 @@ const connectDB = require("./config/db");
 const dotenv = require("dotenv").config();
 const port = 5500;
 const app = express();
+const cors = require("cors");
 
 // Connexion DB
 connectDB();
@@ -11,6 +12,11 @@ connectDB();
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors({
+    origin: ['http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+}));
 
 // NAMESPACES
 app.use("/post", require("./routes/post.routes"));
