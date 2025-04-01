@@ -58,7 +58,7 @@ const handleSubmit = () => {
 /* Styles existants */
 .login-box {
     position: absolute;
-    top: 50%;
+    top: 42%;
     left: 50%;
     width: 400px;
     padding: 40px;
@@ -264,12 +264,5 @@ const handleSubmit = () => {
 /* Nouveau style pour les messages d'erreur */
 .error-message {
     color: #fff;
-}
-
-@media (max-width: 992px) {
-    .login-box {
-        width: 350px;
-        margin-top: -150px;
-    }
 }
 </style>

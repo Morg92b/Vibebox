@@ -3,10 +3,13 @@
         <Navbar />
         <Background />
         <main class="main-content">
-            <LoginCard :email="email" :password="password" :errorMessage="errorMessage" @update:email="email = $event"
-                @update:password="password = $event" @submit="onSubmit"
-                :class="{ 'fade-in': true, 'show': isMounted }" />
+            <div class="content-wrapper">
+                <LoginCard :email="email" :password="password" :errorMessage="errorMessage"
+                    @update:email="email = $event" @update:password="password = $event" @submit="onSubmit"
+                    :class="{ 'fade-in': true, 'show': isMounted }" />
+            </div>
         </main>
+        <Footer />
     </div>
 </template>
 
@@ -18,6 +21,7 @@ import { login } from '../stores/authService';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
 import Background from '@/components/Background.vue';
+import Footer from '@/components/Footer.vue'; // Import ajouté
 
 const email = ref('');
 const password = ref('');
@@ -25,7 +29,6 @@ const errorMessage = ref('');
 const authStore = useAuthStore();
 const router = useRouter();
 const isMounted = ref(false);
-
 
 onMounted(() => {
     setTimeout(() => {
@@ -52,7 +55,29 @@ const onSubmit = async () => {
 </script>
 
 <style scoped>
-/* Animation d'apparition en fondu */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px - 60px);
+}
+
+.content-wrapper {
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Animation */
 .fade-in {
     opacity: 0;
     transition: opacity 1s ease-in-out;
@@ -60,16 +85,5 @@ const onSubmit = async () => {
 
 .fade-in.show {
     opacity: 1;
-}
-
-.app-layout {
-    position: relative;
-    min-height: 100vh;
-}
-
-.main-content {
-    padding-top: 950px;
-    position: relative;
-    z-index: 1;
 }
 </style>
