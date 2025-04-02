@@ -167,7 +167,6 @@ const toggleLike = async (playlistId) => {
     } catch (err) {
         console.error("Erreur like/unlike:", err);
         error.value = err.response?.data?.error || "Erreur lors de la mise à jour";
-        // Rechargement en cas d'erreur
         await fetchPlaylists();
     }
 };
@@ -208,11 +207,14 @@ onMounted(() => {
 
 <style scoped>
 .playlists-container {
-    max-width: 100%;
-    padding: 20px;
-    overflow-x: hidden;
-    width: 1000px;
+    max-width: 1250px;
+    margin: 0 auto;
+    display: flex;
+    margin-top: 80px;
+    flex-direction: column;
+    align-items: center;
 }
+
 
 h2 {
     text-align: center;
@@ -275,12 +277,12 @@ h2 {
 .playlists-horizontal {
     display: flex;
     gap: 20px;
-    padding: 0 10px;
+    padding: 0 150px;
     width: max-content;
 }
 
 .playlist-card-horizontal {
-    flex: 0 0 280px;
+    flex: 0 0 250px;
     background: #1a5e9c;
     border-radius: 10px;
     overflow: hidden;
@@ -295,7 +297,7 @@ h2 {
 }
 
 .playlist-header {
-    padding: 15px;
+    padding: 10px;
     background: #191414;
     color: white;
 }
@@ -321,19 +323,19 @@ h2 {
 }
 
 .playlist-info {
-    padding: 15px;
+    padding: 10px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     color: white;
 }
 
 .likes-section {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 10px 0;
+    gap: 5px;
+    margin: 5px 0;
 }
 
 .likes-section button {
@@ -347,7 +349,7 @@ h2 {
     display: block;
     background: #1DB954;
     color: white;
-    padding: 8px;
+    padding: 5px;
     border-radius: 20px;
     text-decoration: none;
     text-align: center;
@@ -378,14 +380,70 @@ h2 {
 }
 
 @media (max-width: 768px) {
+    .playlists-container {
+        padding: 0.5rem;
+    }
+
     .controls {
         flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
+        align-items: center;
+        gap: 1rem;
     }
 
     .playlist-card-horizontal {
-        flex: 0 0 240px;
+        flex: 0 0 220px;
+    }
+
+    .horizontal-scroll {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .playlist-card-horizontal {
+        flex: 0 0 180px;
+    }
+
+    .playlists-container {
+        padding: 0.5rem;
+    }
+
+    .horizontal-scroll {
+        overflow-x: auto;
+        margin: 0 -10px;
+    }
+
+    .playlists-horizontal {
+        gap: 15px;
+        padding: 0 10px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .playlists-container {
+        min-width: 1024px;
+        margin-top: 120px;
+        position: static;
+    }
+}
+
+@media (max-width: 375px) {
+    .playlist-card-horizontal {
+        flex: 0 0 150px;
+    }
+
+    .horizontal-scroll {
+        overflow-x: auto;
+        margin: 0 0 10px 0;
+        padding: 0 10px;
+    }
+
+    .playlists-horizontal {
+        gap: 5px;
+    }
+
+    .playlists-container {
+        padding: 12rem;
     }
 }
 </style>

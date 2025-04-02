@@ -32,7 +32,7 @@ body {
 }
 
 .footer {
-    width: 100vw;
+    width: 100%;
     /* Prend toute la largeur de la fenêtre */
     position: fixed;
     left: 0;
