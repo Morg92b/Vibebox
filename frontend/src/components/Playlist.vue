@@ -115,10 +115,14 @@ const getUsername = (user) => {
 
 // Gestion des likes
 const userLikedPlaylist = (playlistId) => {
-    if (!authStore.user?.id) return false
-    const playlist = playlists.value.find(p => p._id === playlistId)
-    return playlist?.likes?.includes(authStore.user.id)
-}
+    if (!authStore.userId) return false;
+    const playlist = playlists.value.find(p => p._id === playlistId);
+    if (!playlist?.likes) return false;
+
+    return playlist.likes.some(
+        likeId => likeId.toString() === authStore.userId.toString()
+    );
+};
 
 const toggleLike = async (playlistId) => {
     if (!authStore.isAuthenticated) {
@@ -127,24 +131,44 @@ const toggleLike = async (playlistId) => {
     }
 
     try {
-        const response = await axios({
-            method: 'PATCH',
-            url: `http://localhost:5500/api/spotify/playlist/${userLikedPlaylist(playlistId) ? 'unlike' : 'like-playlist'
-                }`,
-            data: {
+        const hasLiked = userLikedPlaylist(playlistId);
+        const endpoint = hasLiked ? 'unlike' : 'like-playlist';
+
+        const response = await axios.patch(
+            `http://localhost:5500/api/spotify/playlist/${endpoint}`,
+            {
                 userId: authStore.userId,
                 playlistId
             },
-            headers: {
-                Authorization: `Bearer ${authStore.token}`
+            {
+                headers: {
+                    Authorization: `Bearer ${authStore.token}`
+                }
             }
-        });
-        await fetchPlaylists();
-    } catch (err) {
-        if (err.response?.status === 401) {
-            authStore.logout();
+        );
+
+        // Mise à jour optimiste de l'UI
+        const updatedPlaylists = [...playlists.value];
+        const playlistIndex = updatedPlaylists.findIndex(p => p._id === playlistId);
+
+        if (playlistIndex !== -1) {
+            if (hasLiked) {
+                updatedPlaylists[playlistIndex].likes = updatedPlaylists[playlistIndex].likes
+                    .filter(id => id.toString() !== authStore.userId.toString());
+            } else {
+                updatedPlaylists[playlistIndex].likes = [
+                    ...updatedPlaylists[playlistIndex].likes,
+                    authStore.userId
+                ];
+            }
+            playlists.value = updatedPlaylists;
         }
-        error.value = err.response?.data?.error || err.message;
+
+    } catch (err) {
+        console.error("Erreur like/unlike:", err);
+        error.value = err.response?.data?.error || "Erreur lors de la mise à jour";
+        // Rechargement en cas d'erreur
+        await fetchPlaylists();
     }
 };
 
@@ -257,7 +281,7 @@ h2 {
 
 .playlist-card-horizontal {
     flex: 0 0 280px;
-    background: white;
+    background: #1a5e9c;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -302,6 +326,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    color: white;
 }
 
 .likes-section {
