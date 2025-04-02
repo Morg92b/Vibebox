@@ -1,6 +1,6 @@
 <template>
     <div class="login-box">
-        <p>Login</p>
+        <p>Connexion</p>
         <form @submit.prevent="handleSubmit">
             <div class="user-box">
                 <input v-model="localEmail" required name="email" type="text">
@@ -8,7 +8,7 @@
             </div>
             <div class="user-box">
                 <input v-model="localPassword" required name="password" type="password">
-                <label>Password</label>
+                <label>Mot de passe</label>
             </div>
             <button type="submit">
                 <span></span>
@@ -16,11 +16,11 @@
                 <span></span>
                 <span></span>
                 <span></span>
-                Submit
+                Se connecter
             </button>
         </form>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <p>Don't have an account? <router-link to="/register" class="a2">Sign up!</router-link></p>
+        <p>Vous n'avez pas de compte ? <router-link to="/register" class="a2">S'inscrire!</router-link></p>
     </div>
 </template>
 
