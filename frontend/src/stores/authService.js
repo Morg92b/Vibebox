@@ -7,22 +7,25 @@ export const login = async (credentials, authStore, router) => {
     try {
         const response = await axios.post(`${BASE_URL}/api/auth/login`, credentials);
         console.log('Réponse de l\'API de connexion :', response.data);
+        
         if (response.data.token && response.data.username && response.data.userId) {
-            console.log('Utilisateur connecté :', response.data.username);
-            authStore.login(response.data.username, response.data.token, response.data.userId);
-            router.push('/'); 
+            authStore.login(
+                response.data.username, 
+                response.data.token, 
+                response.data.userId
+            );
+            
+            // Initialiser immédiatement après le login
+            authStore.initialize();
+            
+            router.push('/Vibe');
+            return response.data;
         } else {
-            console.error('Données de connexion manquantes dans la réponse.');
-            throw new Error("Données de connexion manquantes.");
+            throw new Error("Données de connexion incomplètes");
         }
     } catch (error) {
-        if (error.response) {
-            console.error('Erreur de connexion :', error.response.data.message);
-            throw new Error(error.response.data.message || "Une erreur est survenue. Veuillez réessayer");
-        } else {
-            console.error('Erreur lors de la requête de connexion :', error.message);
-            throw new Error("Une erreur est survenue. Veuillez réessayer");
-        }
+        console.error('Erreur de connexion:', error);
+        throw error;
     }
 };
 

@@ -296,3 +296,23 @@ module.exports.getUserById = async (req, res) => {
         return res.status(500).json({ error: "Erreur serveur." });
     }
 };
+
+module.exports.getUsersByIds = async (req, res) => {
+    try {
+        const { userIds } = req.body;
+        
+        if (!userIds || !Array.isArray(userIds)) {
+            return res.status(400).json({ error: "Liste d'IDs utilisateur requise" });
+        }
+        const validIds = userIds.filter(id => mongoose.Types.ObjectId.isValid(id));
+        
+        const users = await UserModel.find({ 
+            _id: { $in: validIds } 
+        }).select('_id username');
+
+        res.json(users);
+    } catch (error) {
+        console.error("Erreur récupération utilisateurs:", error);
+        res.status(500).json({ error: "Erreur serveur" });
+    }
+};

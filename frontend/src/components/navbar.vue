@@ -14,7 +14,7 @@
             </ul>
             <div class="user_menu">
                 <a href="#" class="action_btn" @click="toggleUserMenu">
-                    {{ isAuthenticated ? `Welcome ${username}` : "Disconnected" }}
+                    {{ authStore.isAuthenticated ? `Welcome ${authStore.username}` : "Disconnected" }}
                 </a>
                 <div class="dropdown_user" :class="{ open: isUserMenuOpen }" v-if="isAuthenticated">
                     <router-link to="/settings">⚙️ Settings</router-link>

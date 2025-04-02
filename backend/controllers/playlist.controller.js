@@ -182,39 +182,41 @@ module.exports.postUserPlaylist = async (req, res) => {
 };
 
 module.exports.likePlaylist = async (req, res) => {
-    const { userId, playlistId } = req.body;
-
     try {
+        const { userId, playlistId } = req.body;
 
+        // Vérification des IDs
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ error: "ID utilisateur invalide." });
         }
-        // Récupérer l'utilisateur
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ error: "Utilisateur non trouvé" });
-        }
-
-        // Vérifier si la playlist existe
-
         if (!mongoose.Types.ObjectId.isValid(playlistId)) {
             return res.status(400).json({ error: "ID playlist invalide." });
         }
-        const playlist = await Playlist.findById(playlistId);
-        if (!playlist) {
-            return res.status(404).json({ error: "Playlist non trouvée" });
-        }
 
-        // Vérifier si l'utilisateur a déjà liké la playlist
-        if (playlist.likes.includes(userId)) {
+        // Vérification de l'existence
+        const [user, playlist] = await Promise.all([
+            User.findById(userId),
+            Playlist.findById(playlistId)
+        ]);
+
+        if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+        if (!playlist) return res.status(404).json({ error: "Playlist non trouvée" });
+
+        // Conversion des IDs en string pour la comparaison
+        const userIdStr = userId.toString();
+        const likesStr = playlist.likes.map(id => id.toString());
+
+        if (likesStr.includes(userIdStr)) {
             return res.status(400).json({ error: "Vous avez déjà liké cette playlist" });
         }
 
-        // Ajouter l'utilisateur à la liste des likes
         playlist.likes.push(userId);
         await playlist.save();
 
-        res.status(200).json({ message: "Playlist likée avec succès" });
+        res.status(200).json({ 
+            message: "Playlist likée avec succès",
+            likes: playlist.likes // Retourne le nouveau tableau de likes
+        });
     } catch (error) {
         console.error("Erreur lors du like de la playlist :", error.message);
         res.status(500).json({ error: "Impossible de liker la playlist" });
@@ -225,44 +227,46 @@ module.exports.unlikePlaylist = async (req, res) => {
     try {
         const { userId, playlistId } = req.body;
 
+        // Vérification des IDs
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ error: "ID utilisateur invalide." });
         }
-        // Récupérer l'utilisateur
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ error: "Utilisateur non trouvé" });
-        }
-
-        // Vérifier si la playlist existe
         if (!mongoose.Types.ObjectId.isValid(playlistId)) {
             return res.status(400).json({ error: "ID playlist invalide." });
         }
 
-        const playlist = await Playlist.findById(playlistId);
-        if (!playlist) {
-            return res.status(404).json({ error: "Playlist non trouvée" });
-        }
+        const [user, playlist] = await Promise.all([
+            User.findById(userId),
+            Playlist.findById(playlistId)
+        ]);
 
-        // Vérifier si l'utilisateur a déjà liké la playlist
-        if (!playlist.likes.includes(userId)) {
+        if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+        if (!playlist) return res.status(404).json({ error: "Playlist non trouvée" });
+
+        // Conversion des IDs en string pour la comparaison
+        const userIdStr = userId.toString();
+        const likesStr = playlist.likes.map(id => id.toString());
+
+        if (!likesStr.includes(userIdStr)) {
             return res.status(400).json({ error: "Vous n'avez pas liké cette playlist" });
         }
 
-        // Retirer l'utilisateur de la liste des likes
-        playlist.likes.pull(userId);
+        playlist.likes = playlist.likes.filter(id => id.toString() !== userIdStr);
         await playlist.save();
 
-        res.status(200).json({ message: "Like retiré de la playlist avec succès" });
+        res.status(200).json({ 
+            message: "Like retiré avec succès",
+            likes: playlist.likes // Retourne le nouveau tableau de likes
+        });
     } catch (error) {
         console.error("Erreur lors du retrait du like :", error.message);
-        res.status(500).json({ error: "Impossible de retirer le like de la playlist" });
+        res.status(500).json({ error: "Impossible de retirer le like" });
     }
 };
 
 module.exports.getAllPlaylists = async (req, res) => {
     try {
-        const playlists = await Playlist.find().sort({ createdAt: -1 });
+        const playlists = await Playlist.find().sort({ createdAt: -1 }).populate('user', 'username');
 
         res.status(200).json(playlists);
     } catch (error) {

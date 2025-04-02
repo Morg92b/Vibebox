@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import Vibe from '@/views/Vibe.vue';
 //import NotFound from '@/views/NotFound.vue';
 
 
@@ -11,7 +12,7 @@ const routes = [
     name: 'Home',
     component: Home, 
     meta: {
-      title: 'Vibebox'
+      title: 'Vibebox - Home'
     }
   },
   {
@@ -28,6 +29,15 @@ const routes = [
     component: Register,
     meta: {
       title: 'Vibebox Register'
+    }
+  },
+  {
+    path: '/Vibe',
+    name: 'Vibe-fr',
+    component: Vibe,
+    meta: {
+      requiresAuth: true,
+      title: 'Vibebox'
     }
   }
   /*{
