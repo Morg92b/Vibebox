@@ -1,10 +1,10 @@
 <template>
     <div class="login-box">
-        <p>Sign-up</p>
+        <p>S'enregistrer</p>
         <form @submit.prevent="handleSubmit">
             <div class="user-box">
                 <input v-model="localUsername" required name="username" type="text">
-                <label>Username</label>
+                <label>Nom d'utilisateur</label>
             </div>
             <div class="user-box">
                 <input v-model="localEmail" required name="email" type="text">
@@ -12,11 +12,11 @@
             </div>
             <div class="user-box">
                 <input v-model="localPassword" required name="password" type="password">
-                <label>Password</label>
+                <label>Mot de passe</label>
             </div>
             <div class="user-box">
                 <input v-model="localconfirmpassword" required name="passwordConfirm" type="password">
-                <label>Confirm Password</label>
+                <label>Confirmez le mot de passe</label>
             </div>
             <button type="submit">
                 <span></span>
@@ -24,11 +24,11 @@
                 <span></span>
                 <span></span>
                 <span></span>
-                Submit
+                Soumettre
             </button>
         </form>
         <p v-if="localErrorMessage" class="error-message">{{ localErrorMessage }}</p>
-        <p>Already have an account? <router-link to="/login" class="a2">Sign-in!</router-link></p>
+        <p>Vous avez déjà un compte ? <router-link to="/login" class="a2">Se connecter!</router-link></p>
     </div>
 </template>
 
@@ -85,9 +85,10 @@ const handleSubmit = () => {
 /* Styles existants */
 .login-box {
     position: absolute;
-    top: 50%;
+    top: 43%;
     left: 50%;
     width: 400px;
+    height: 480px;
     padding: 40px;
     margin: 20px auto;
     transform: translate(-50%, -55%);
