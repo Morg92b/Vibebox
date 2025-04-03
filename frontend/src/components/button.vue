@@ -40,16 +40,24 @@ button:hover:before {
 
 <template>
     <button @click="navigateToLogin">
-        I'M READY
+        GO
     </button>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router';
-
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
+const authStore = useAuthStore();
 const router = useRouter();
+const isAuthenticated = computed(() => !!authStore.token);
+
 
 const navigateToLogin = () => {
-    router.push('/login');
+    if (isAuthenticated.value) {
+        router.push('/Vibe');
+    } else {
+        router.push('/Login')
+    }
 };
 </script>
