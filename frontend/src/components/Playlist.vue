@@ -222,13 +222,20 @@ onMounted(() => {
 h2 {
     text-align: center;
     margin-bottom: 15px;
-    color: #fff;
-    font-family: 'Arial', sans-serif;
     font-family: "Bebas Neue", sans-serif;
     font-weight: 400;
     font-style: normal;
     text-transform: uppercase;
     letter-spacing: 2px;
+    color: black;
+    /* Couleur par défaut en mode clair */
+}
+
+@media (prefers-color-scheme: dark) {
+    h2 {
+        color: white;
+        /* Change en blanc en mode sombre */
+    }
 }
 
 .controls {
