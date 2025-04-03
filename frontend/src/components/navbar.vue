@@ -2,23 +2,22 @@
     <header>
         <div class="navbar">
             <div class="logo">
-                <router-link to="/">
+                <router-link to="/Vibe">
                     <img src="@/assets/vibox.png" alt="Logo Nav" class="logo-nav" />
                 </router-link>
             </div>
             <ul class="links" v-if="!isMenuOpen || screenWidth > 992">
-                <li v-if="!username"><router-link to="/login">Login</router-link></li>
-                <li v-if="!username"><router-link to="/register">Register</router-link></li>
-                <li><router-link to="/contents">Contents</router-link></li>
-                <li><router-link to="/about">About</router-link></li>
+                <li v-if="!username"><router-link to="/login">Se connecter</router-link></li>
+                <li v-if="!username"><router-link to="/register">S'enregistrer</router-link></li>
+                <li><router-link to="/about">Informations</router-link></li>
             </ul>
             <div class="user_menu">
                 <a href="#" class="action_btn" @click="toggleUserMenu">
-                    {{ authStore.isAuthenticated ? `Welcome ${authStore.username}` : "Disconnected" }}
+                    {{ authStore.isAuthenticated ? `Bienvenue ${authStore.username}` : "Disconnected" }}
                 </a>
                 <div class="dropdown_user" :class="{ open: isUserMenuOpen }" v-if="isAuthenticated">
-                    <router-link to="/settings">⚙️ Settings</router-link>
-                    <a href="#" @click="handlelogout">🚪 Logout</a>
+                    <router-link to="/settings">⚙️ Paramètres</router-link>
+                    <a href="#" @click="handlelogout">🚪 Déconnexion</a>
                 </div>
             </div>
             <div class="toggle_btn" @click="toggleMenu" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
@@ -27,10 +26,9 @@
             </div>
         </div>
         <div class="dropdown_menu" :class="{ open: isMenuOpen }">
-            <li v-if="!username"><router-link to="/login">Login</router-link></li>
-            <li v-if="!username"><router-link to="/register">Register</router-link></li>
-            <li><router-link to="/contents">Contents</router-link></li>
-            <li><router-link to="/about">About</router-link></li>
+            <li v-if="!username"><router-link to="/login">Connexion</router-link></li>
+            <li v-if="!username"><router-link to="/register">S'enregistrer</router-link></li>
+            <li><router-link to="/about">Informations</router-link></li>
             <li><a href="#" class="action_btn" @click="toggleDropdownUserMenu">{{ username ? `${username}` :
                 "Disconnected" }}</a></li>
             <div class="dropdown_user" :class="{ open: isDropdownUserMenuOpen }" v-if="isAuthenticated">
@@ -216,8 +214,12 @@ header {
 }
 
 .dropdown_menu.open {
-    height: 260px;
+    height: 225px;
     border-color: #1a5e9c;
+}
+
+.dropdown_menu:not(.open) {
+    border: none;
 }
 
 .dropdown_menu li {
@@ -269,7 +271,7 @@ header {
 
 .dropdown_user a {
     display: block;
-    padding: 10px;
+    padding: 8px;
     color: #fff;
     /* Blanc */
     text-align: center;

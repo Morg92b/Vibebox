@@ -206,6 +206,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 .playlists-container {
     width: 100%;
     margin: 0 auto;
@@ -220,9 +222,11 @@ onMounted(() => {
 h2 {
     text-align: center;
     margin-bottom: 15px;
-    color: #1a5e9c;
+    color: #fff;
     font-family: 'Arial', sans-serif;
-    font-weight: bold;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
