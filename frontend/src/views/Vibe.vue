@@ -20,13 +20,9 @@ import Playlist from '@/components/Playlist.vue';
 .app-layout {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 .main-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
     padding: 1rem;
     width: 100%;
 }
@@ -34,6 +30,7 @@ import Playlist from '@/components/Playlist.vue';
 .content-wrapper {
     width: 100%;
     max-width: 1400px;
-    /* Ajustez selon vos besoins */
+    padding: 0 20px;
+    margin: 0 auto;
 }
 </style>

@@ -207,12 +207,13 @@ onMounted(() => {
 
 <style scoped>
 .playlists-container {
-    max-width: 1250px;
+    width: 100%;
     margin: 0 auto;
-    display: flex;
-    margin-top: 80px;
-    flex-direction: column;
-    align-items: center;
+    padding: 20px;
+    background: var(--color-background-soft);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
 }
 
 
@@ -272,13 +273,15 @@ h2 {
     width: 100%;
     overflow-x: auto;
     padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .playlists-horizontal {
     display: flex;
     gap: 20px;
-    padding: 0 150px;
+    padding: 10px 0;
     width: max-content;
+    margin: 0 auto;
 }
 
 .playlist-card-horizontal {
@@ -401,7 +404,7 @@ h2 {
 
 @media (max-width: 480px) {
     .playlist-card-horizontal {
-        flex: 0 0 180px;
+        flex: 0 0 100%;
     }
 
     .playlists-container {
@@ -419,17 +422,9 @@ h2 {
     }
 }
 
-@media (min-width: 1024px) {
-    .playlists-container {
-        min-width: 1024px;
-        margin-top: 120px;
-        position: static;
-    }
-}
-
 @media (max-width: 375px) {
     .playlist-card-horizontal {
-        flex: 0 0 150px;
+        flex: 0 0 110px;
     }
 
     .horizontal-scroll {
@@ -443,7 +438,12 @@ h2 {
     }
 
     .playlists-container {
-        padding: 12rem;
+        padding: 1rem;
+        margin-bottom: 10rem;
+    }
+
+    h2 {
+        font-size: 1rem;
     }
 }
 </style>
