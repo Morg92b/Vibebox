@@ -15,7 +15,7 @@ router.get("/getuser/:id", getUserById);
 router.put("/update/:id", authenticateUser, editUser);
 router.delete("/:id", authenticateUser, deleteUser);
 router.post("/logout", authenticateUser, logout);
-router.get("/:userId/spotify", authenticateUser, checkSpotifyLink);
+router.get("/:userId/spotify", checkSpotifyLink);
 router.post('/getUsersByIds', getUsersByIds);
 
 module.exports = router;

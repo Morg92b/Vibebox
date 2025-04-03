@@ -25,6 +25,7 @@
                     size="lg" />
             </div>
         </div>
+        <SubNavbar v-if="isAuthenticated" />
         <div class="dropdown_menu" :class="{ open: isMenuOpen }">
             <li v-if="!username"><router-link to="/login">Connexion</router-link></li>
             <li v-if="!username"><router-link to="/register">S'enregistrer</router-link></li>
@@ -47,6 +48,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { RouterLink, useRouter } from "vue-router";
 import { useAuthStore } from "../stores/authStore";
 import { logout } from "../stores/authService";
+import SubNavbar from "./SubNavbar.vue";
 
 const isMenuOpen = ref(false);
 const isHovered = ref(false);
@@ -118,7 +120,6 @@ li {
 a {
     text-decoration: none;
     color: #fff;
-    /* Blanc */
     font-size: 1rem;
 }
 
@@ -134,7 +135,6 @@ header {
     right: 0;
     padding: 0 2rem;
     background: rgba(24, 24, 24, 0.75);
-    /* Noir */
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(0px);
@@ -162,7 +162,6 @@ header {
 
 .navbar .toggle_btn {
     color: #fff;
-    /* Blanc */
     display: flex;
     justify-content: center;
     cursor: pointer;
@@ -171,9 +170,7 @@ header {
 
 .action_btn {
     background-color: #1a5e9c;
-    /* Bleu foncé */
     color: #fff;
-    /* Blanc */
     padding: 0.5rem 1rem;
     border: none;
     outline: none;
@@ -187,7 +184,6 @@ header {
 .action_btn:hover {
     transform: scale(1.05);
     background-color: #144a7c;
-    /* Bleu légèrement plus foncé */
     color: #fff;
 }
 
@@ -195,7 +191,6 @@ header {
     transform: scale(0.95);
 }
 
-/* Menu dropdown */
 .dropdown_menu {
     position: fixed;
     display: none;
@@ -204,7 +199,6 @@ header {
     height: 0;
     width: 300px;
     background: rgba(24, 24, 24, 0.92);
-    /* Noir avec transparence */
     backdrop-filter: blur(12px);
     border-radius: 10px;
     overflow: hidden;
@@ -232,7 +226,6 @@ header {
 
 .dropdown_menu li:hover {
     background-color: #1a5e9c;
-    /* Bleu foncé */
 }
 
 .dropdown_menu .action_btn {
@@ -273,14 +266,12 @@ header {
     display: block;
     padding: 8px;
     color: #fff;
-    /* Blanc */
     text-align: center;
     transition: background-color 0.3s ease;
 }
 
 .dropdown_user a:hover {
     background: #1a5e9c;
-    /* Bleu foncé */
 }
 
 /* Responsive Navbar */
