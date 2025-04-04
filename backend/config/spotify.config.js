@@ -40,7 +40,7 @@ module.exports.handleSpotifyCallback = async (req, res) => {
         const spotifyId = userProfileResponse.data.id;
 
         // Mettre à jour l'utilisateur dans la BDD
-        const user = await UserModel.findById(userId); // Suppression de mongoose.Types.ObjectId()
+        const user = await UserModel.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
@@ -50,7 +50,14 @@ module.exports.handleSpotifyCallback = async (req, res) => {
         user.spotifyId = spotifyId;
         await user.save();
 
-        return res.redirect(`http://localhost:5173/Vibe/?spotifyLinked=true`);
+        console.log("Spotify Access Token:", access_token);
+        console.log("Spotify Refresh Token:", refresh_token);
+        return res.json({
+            linked: true,
+            message: "Utilisateur connecté à Spotify",
+            spotifyId: spotifyId,
+            spotifyAccessToken: access_token,
+        });
     } catch (error) {
         console.error("Erreur lors de l'authentification Spotify", error.response?.data || error.message);
         return res.status(500).json({ error: "Impossible d'obtenir le token Spotify" });
@@ -62,12 +69,11 @@ module.exports.unlinkSpotifyAccount = async (req, res) => {
     const userId = req.body.userId;
 
     try {
-        const user = await UserModel.findById(userId); // Suppression de mongoose.Types.ObjectId()
+        const user = await UserModel.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
 
-        // Supprimer les tokens et l'ID Spotify
         user.spotifyAccessToken = null;
         user.spotifyRefreshToken = null;
         user.spotifyId = null;

@@ -5,8 +5,8 @@
     </button>
     <transition name="slide">
       <div v-if="isExpanded" class="expanded-menu">
-        <router-link to="/profile">👤 Profil</router-link>
         <BoutonSpo v-if="authStore.isAuthenticated" />
+        <BoutonAdd />
       </div>
     </transition>
   </div>
@@ -17,6 +17,7 @@ import { ref, computed } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import BoutonSpo from './BoutonSpo.vue';
+import BoutonAdd from './BoutonAdd.vue';
 
 const authStore = useAuthStore();
 const isExpanded = ref(false);

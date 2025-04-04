@@ -28,26 +28,27 @@ module.exports.createPlaylist = async (req, res) => {
     }
 };
 
-// Supprimer une playlist
 module.exports.deletePlaylist = async (req, res) => {
     const { userId, playlistId } = req.body;
 
     try {
         const user = await User.findById(userId);
-        if (!user || !user.spotifyAccessToken) {
-            return res.status(401).json({ error: "Compte Spotify non lié" });
+        if (!user) {
+            return res.status(401).json({ error: "Utilisateur non trouvé" });
+        }
+        const deletedPlaylist = await Playlist.findOneAndDelete({ user: userId, spotifyId: playlistId });
+
+        if (!deletedPlaylist) {
+            return res.status(404).json({ error: "Playlist non trouvée sur le site" });
         }
 
-        await axios.delete(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, {
-            headers: { Authorization: `Bearer ${user.spotifyAccessToken}` },
-        });
-
-        return res.json({ message: "Playlist supprimée" });
+        return res.json({ message: "Playlist supprimée du site" });
     } catch (error) {
-        console.error("Erreur suppression playlist", error.response?.data || error.message);
-        return res.status(500).json({ error: "Impossible de supprimer la playlist" });
+        console.error("Erreur suppression playlist du site", error.message);
+        return res.status(500).json({ error: "Impossible de supprimer la playlist du site" });
     }
 };
+
 
 // Modifier une playlist (changer le nom ou la rendre publique/privée)
 module.exports.updatePlaylist = async (req, res) => {
@@ -96,16 +97,16 @@ module.exports.getUserPlaylists = async (req, res) => {
                 headers: { Authorization: `Bearer ${user.spotifyAccessToken}` },
             });
 
-            console.log("Réponse de l'API Spotify :", {
-                status: response.status,
-                data: {
-                    total: response.data.total,
-                    items: response.data.items.map(playlist => playlist.name),
-                    next: response.data.next,
-                },
-            });
+            console.log("Playlists récupérées :", response.data.items.map(p => ({
+                id: p.id,
+                name: p.name
+            })));
 
-            allPlaylists = allPlaylists.concat(response.data.items);
+            allPlaylists = allPlaylists.concat(response.data.items.map(playlist => ({
+                id: playlist.id,
+                name: playlist.name,
+            })));
+
             nextUrl = response.data.next;
         }
 
@@ -215,7 +216,7 @@ module.exports.likePlaylist = async (req, res) => {
 
         res.status(200).json({ 
             message: "Playlist likée avec succès",
-            likes: playlist.likes // Retourne le nouveau tableau de likes
+            likes: playlist.likes
         });
     } catch (error) {
         console.error("Erreur lors du like de la playlist :", error.message);

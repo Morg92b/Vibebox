@@ -21,7 +21,12 @@ const checkSpotifyConnection = async () => {
     try {
         const response = await axios.get(`http://localhost:5500/api/auth/${authStore.userId}/spotify`);
         console.log("Réponse API Spotify:", response.data);
-        isLinked.value = response.data.linked; // Remplace `isLinked` par `linked`
+
+        isLinked.value = response.data.linked;
+
+        if (response.data.spotifyAccessToken) {
+            authStore.setSpotifyToken(response.data.spotifyAccessToken);
+        }
     } catch (error) {
         console.error("Erreur vérification Spotify", error);
     }
@@ -38,7 +43,7 @@ const handleSpotifyConnection = async () => {
         } else {
             await linkSpotifyAccount()
         }
-        await checkSpotifyConnection() // Re-vérifie l'état après l'action
+        await checkSpotifyConnection()
     } catch (error) {
         console.error("Erreur gestion Spotify", error)
     } finally {
@@ -67,7 +72,6 @@ const unlinkSpotifyAccount = async () => {
     }
 }
 
-// Au montage et quand l'userId change
 onMounted(() => {
     checkSpotifyConnection()
 })
@@ -75,10 +79,10 @@ onMounted(() => {
 
 <style scoped>
 .spotify-button {
-    padding: 10px 10px;
+    padding: 10px 20px;
     text-transform: uppercase;
     border-radius: 8px;
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 500;
     color: #ffffff80;
     text-shadow: none;
@@ -90,15 +94,25 @@ onMounted(() => {
     user-select: none;
 }
 
+.spotify-button,
+#btn {
+    font-size: 8px;
+    min-width: 140px;
+    height: 33px;
+}
+
+
+
 .spotify-button:hover,
 .spotify-button:focus {
     color: #ffffff;
-    background: #1DB954;
-    border: 1px solid #1DB954;
+    background: #008cff;
+    border: 1px solid #008cff;
     text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
-    box-shadow: 0 0 5px #1DB954, 0 0 20px #1DB954, 0 0 50px #1DB954,
-        0 0 100px #1DB954;
+    box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
+        0 0 100px #008cff;
 }
+
 
 .loading-spinner {
     width: 12px;
