@@ -76,7 +76,7 @@ const loading = ref(true)
 const error = ref(null)
 const sortBy = ref('date')
 const currentPage = ref(0)
-const itemsPerPage = 4
+const itemsPerPage = 6
 const authStore = useAuthStore()
 
 // Tri et pagination
