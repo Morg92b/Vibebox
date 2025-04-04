@@ -9,7 +9,7 @@
             <ul class="links" v-if="!isMenuOpen || screenWidth > 992">
                 <li v-if="!username"><router-link to="/login">Se connecter</router-link></li>
                 <li v-if="!username"><router-link to="/register">S'enregistrer</router-link></li>
-                <li><router-link to="/about">Informations</router-link></li>
+                <li><router-link to="/Informations">Informations</router-link></li>
             </ul>
             <div class="user_menu">
                 <a href="#" class="action_btn" @click="toggleUserMenu">
@@ -29,7 +29,7 @@
         <div class="dropdown_menu" :class="{ open: isMenuOpen }">
             <li v-if="!username"><router-link to="/login">Connexion</router-link></li>
             <li v-if="!username"><router-link to="/register">S'enregistrer</router-link></li>
-            <li><router-link to="/about">Informations</router-link></li>
+            <li><router-link to="/Informations">Informations</router-link></li>
             <li><a href="#" class="action_btn" @click="toggleDropdownUserMenu">{{ username ? `${username}` :
                 "Disconnected" }}</a></li>
             <div class="dropdown_user" :class="{ open: isDropdownUserMenuOpen }" v-if="isAuthenticated">

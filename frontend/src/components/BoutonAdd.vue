@@ -1,8 +1,10 @@
 <template>
     <div>
-        <button id="btn" @click="fetchUserPlaylists">Afficher mes playlists</button>
+        <button id="btn" @click="togglePlaylists">
+            {{ isPlaylistVisible ? "Masquer mes playlists" : "Afficher mes playlists" }}
+        </button>
 
-        <div v-show="playlists.length" class="playlist-container">
+        <div v-show="isPlaylistVisible" class="playlist-container">
             <ul>
                 <li v-for="playlist in playlists" :key="playlist.id">
                     {{ playlist.name }}
@@ -17,8 +19,6 @@
                         Supprimer
                     </button>
                 </li>
-
-
             </ul>
         </div>
     </div>
@@ -27,14 +27,30 @@
 
 
 
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "../stores/authStore";
+import { refreshSpotifyToken } from "../stores/authService";
 
-
+const isPlaylistVisible = ref(false);
 const playlists = ref([]);
 const authStore = useAuthStore();
 const savedPlaylists = ref([]);
+
+onMounted(() => {
+    // Rafraîchir le token toutes les 50 minutes
+    setInterval(async () => {
+        await refreshSpotifyToken();
+    }, 50 * 60 * 1000);
+});
+
+async function togglePlaylists() {
+    if (!isPlaylistVisible.value) {
+        await fetchUserPlaylists();
+    }
+    isPlaylistVisible.value = !isPlaylistVisible.value; // Inverse l'état
+}
 
 onMounted(() => {
     authStore.savedPlaylists = JSON.parse(localStorage.getItem("savedPlaylists")) || []; // Vérifie les playlists stockées
@@ -42,7 +58,7 @@ onMounted(() => {
 
 async function fetchUserPlaylists() {
     try {
-        const response = await fetch("http://localhost:5500/api/spotify/playlist", {
+        let response = await fetch("http://localhost:5500/api/spotify/playlist", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -50,6 +66,27 @@ async function fetchUserPlaylists() {
                 "Spotify-Token": `${authStore.spotifyAccessToken}`
             },
         });
+
+        if (response.status === 401) { // Token expiré → on tente de le rafraîchir
+            console.warn("Token expiré, rafraîchissement en cours...");
+            await refreshSpotifyToken(); // Rafraîchit le token
+
+            // Mise à jour du token avant de refaire la requête
+            response = await fetch("http://localhost:5500/api/spotify/playlist", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${authStore.token}`,
+                    "Spotify-Token": `${authStore.spotifyAccessToken}` // Mise à jour du token
+                },
+            });
+
+            // Vérification si la deuxième tentative échoue
+            if (!response.ok) {
+                console.error("Échec après tentative de rafraîchissement du token :", response.status);
+                return;
+            }
+        }
 
         const data = await response.json();
         if (response.ok) {

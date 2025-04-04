@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Vibe from '@/views/Vibe.vue';
+import Informations from '@/views/Informations.vue';
 //import NotFound from '@/views/NotFound.vue';
 
 
@@ -39,7 +40,16 @@ const routes = [
       requiresAuth: true,
       title: 'Vibebox'
     }
-  }
+  },
+  {
+    path: '/Informations',
+    name: 'Informations',
+    component: Informations,
+    meta: {
+      requiresAuth: true,
+      title: 'Vibebox Informations'
+    }
+  },
   /*{
     path: '/:pathMatch(.*)*',
     component: NotFound,
