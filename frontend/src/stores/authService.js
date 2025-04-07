@@ -107,7 +107,7 @@ export const updateUserProfile = async (userData) => {
 export const refreshSpotifyToken = async () => {
     const authStore = useAuthStore();
     const userId = authStore.userId;
-    const refreshToken = authStore.spotifyRefreshToken; // Utilise le refresh token
+    const refreshToken = authStore.spotifyRefreshToken;
 
     if (!userId || !refreshToken) {
         throw new Error("L'ID de l'utilisateur et le refresh token sont requis.");
@@ -116,7 +116,7 @@ export const refreshSpotifyToken = async () => {
     try {
         const response = await axios.post(`${BASE_URL}/api/spotify/refreshtoken`, {
             userId,
-            refresh_token: refreshToken, // Passe le refresh token
+            refresh_token: refreshToken,
         }, {
             headers: {
                 "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export const refreshSpotifyToken = async () => {
         });
 
         if (response.data.access_token) {
-            authStore.setSpotifyToken(response.data.access_token, refreshToken); // Met à jour
+            authStore.setSpotifyToken(response.data.access_token, refreshToken);
             console.log("Nouveau token Spotify récupéré :", response.data.access_token);
         } else {
             throw new Error("Aucun token reçu.");

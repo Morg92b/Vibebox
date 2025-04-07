@@ -37,6 +37,8 @@ const isPlaylistVisible = ref(false);
 const playlists = ref([]);
 const authStore = useAuthStore();
 const savedPlaylists = ref([]);
+const refreshToken = authStore.spotifyRefreshToken;
+const userId = authStore.userId;
 
 onMounted(() => {
     // Rafraîchir le token toutes les 50 minutes
@@ -49,7 +51,7 @@ async function togglePlaylists() {
     if (!isPlaylistVisible.value) {
         await fetchUserPlaylists();
     }
-    isPlaylistVisible.value = !isPlaylistVisible.value; // Inverse l'état
+    isPlaylistVisible.value = !isPlaylistVisible.value;
 }
 
 onMounted(() => {
@@ -58,6 +60,7 @@ onMounted(() => {
 
 async function fetchUserPlaylists() {
     try {
+
         let response = await fetch("http://localhost:5500/api/spotify/playlist", {
             method: "GET",
             headers: {
@@ -67,17 +70,20 @@ async function fetchUserPlaylists() {
             },
         });
 
-        if (response.status === 401) { // Token expiré → on tente de le rafraîchir
-            console.warn("Token expiré, rafraîchissement en cours...");
-            await refreshSpotifyToken(); // Rafraîchit le token
+        console.log("Token actuel:", authStore.token);
+        console.log("User ID:", userId);
+        console.log("Refresh Token:", refreshToken);
 
-            // Mise à jour du token avant de refaire la requête
+        if (response.status === 401) {
+            console.warn("Token expiré, rafraîchissement en cours...");
+            await refreshSpotifyToken();
+
             response = await fetch("http://localhost:5500/api/spotify/playlist", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${authStore.token}`,
-                    "Spotify-Token": `${authStore.spotifyAccessToken}` // Mise à jour du token
+                    "Spotify-Token": `${authStore.spotifyAccessToken}`
                 },
             });
 
