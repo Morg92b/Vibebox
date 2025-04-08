@@ -414,24 +414,35 @@ h2 {
 }
 
 @media (max-width: 480px) {
-    .playlist-card-horizontal {
-        flex: 0 0 100%;
+    .playlists-horizontal {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 10px;
+        padding: 10px;
     }
 
-    .playlists-container {
-        padding: 0.5rem;
+    .playlist-card-horizontal {
+        flex: 0 0 auto;
+        width: 160px;
+        max-width: 160px;
+        height: auto;
+    }
+
+    .playlist-cover img {
+        width: 100%;
+        height: 140px;
+        object-fit: contain;
     }
 
     .horizontal-scroll {
+        width: 100%;
         overflow-x: auto;
-        margin: 0 -10px;
-    }
-
-    .playlists-horizontal {
-        gap: 15px;
-        padding: 0 10px;
+        padding-bottom: 10px;
     }
 }
+
 
 @media (max-width: 375px) {
     .playlist-card-horizontal {

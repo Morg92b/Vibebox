@@ -20,6 +20,7 @@ import Playlist from '@/components/Playlist.vue';
 .app-layout {
     display: flex;
     flex-direction: column;
+    padding-bottom: 150px;
 }
 
 .main-content {

@@ -19,6 +19,7 @@ module.exports.handleSpotifyCallback = async (req, res) => {
     const userId = req.query.state;
 
     try {
+        // Demander un token d'accès auprès de Spotify
         const tokenResponse = await axios.post("https://accounts.spotify.com/api/token", null, {
             params: {
                 grant_type: "authorization_code",
@@ -32,7 +33,7 @@ module.exports.handleSpotifyCallback = async (req, res) => {
 
         const { access_token, refresh_token } = tokenResponse.data;
 
-        // Obtenir l'ID de l'utilisateur Spotify
+        // Obtenir le profil utilisateur Spotify
         const userProfileResponse = await axios.get("https://api.spotify.com/v1/me", {
             headers: { Authorization: `Bearer ${access_token}` },
         });
@@ -52,17 +53,15 @@ module.exports.handleSpotifyCallback = async (req, res) => {
 
         console.log("Spotify Access Token:", access_token);
         console.log("Spotify Refresh Token:", refresh_token);
-        return res.json({
-            linked: true,
-            message: "Utilisateur connecté à Spotify",
-            spotifyId: spotifyId,
-            spotifyAccessToken: access_token,
-        });
+
+        return res.redirect(`http://localhost:5173/Vibe`);
+
     } catch (error) {
         console.error("Erreur lors de l'authentification Spotify", error.response?.data || error.message);
         return res.status(500).json({ error: "Impossible d'obtenir le token Spotify" });
     }
 };
+
 
 // Fonction pour désunir les deux comptes
 module.exports.unlinkSpotifyAccount = async (req, res) => {
