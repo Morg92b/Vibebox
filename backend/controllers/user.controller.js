@@ -45,10 +45,10 @@ module.exports.register = async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: "Email confirmation Spotibook !",
+            subject: "Email confirmation Vibebox !",
             html: `
                 <h1>Bienvenue, ${username}!</h1>
-                <p>Merci de votre inscription pour Spotibook. Veuillez confirmer votre adresse email en cliquant sur le lien ci-dessous :</p>
+                <p>Merci de votre inscription pour Vibebox. Veuillez confirmer votre adresse email en cliquant sur le lien ci-dessous :</p>
                 <a href="${process.env.BASE_URL}/api/auth/confirm-email?token=${token}">Confirmation email</a>
             `,
         };
@@ -166,7 +166,7 @@ module.exports.editUser = async (req, res) => {
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: email,
-                subject: "Confirmation de votre nouvel e-mail Spotibook",
+                subject: "Confirmation de votre nouvel e-mail Vibebox",
                 html: `
                     <h1>Bonjour, ${updateUser.username}!</h1>
                     <p>Vous avez modifié votre adresse e-mail. Veuillez confirmer votre nouvel e-mail en cliquant sur le lien ci-dessous :</p>
