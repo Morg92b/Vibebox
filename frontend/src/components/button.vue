@@ -39,8 +39,8 @@ button:hover:before {
 </style>
 
 <template>
-    <button @click="navigateToLogin">
-        GO
+    <button @click="handleClick">
+        {{ label }}
     </button>
 </template>
 
@@ -53,11 +53,20 @@ const router = useRouter();
 const isAuthenticated = computed(() => !!authStore.token);
 
 
-const navigateToLogin = () => {
-    if (isAuthenticated.value) {
-        router.push('/Vibe');
-    } else {
-        router.push('/Login')
+
+const props = defineProps({
+    label: {
+        type: String,
+        required: true
+    },
+    route: {
+        type: String,
+        required: true
     }
+});
+const emit = defineEmits(['navigate']);
+
+const handleClick = () => {
+    emit('navigate', props.route);
 };
 </script>
