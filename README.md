@@ -50,4 +50,4 @@ If you have any questions or want to know more, feel free to reach out.
 ## Acknowledgements
 
 Building this project has been a real pleasure.  
-Thanks for checking it out — see you soon on **Vibebox**! 🎧🚀
+Thanks for checking it out — see you soon on **Vibebox**! 🎧
