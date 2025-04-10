@@ -14,7 +14,8 @@
                 </div>
             </Transition>
             <Transition name="fade" appear>
-                <Button class="welcome-button" />
+                <Button class="welcome-button" label="GO" :route="isAuthenticated ? '/Vibe' : '/Login'"
+                    @navigate="navigateToLogin" />
             </Transition>
         </div>
         <div class="music-button-container">
@@ -24,14 +25,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Background from '@/components/Background.vue';
 import Button from '@/components/button.vue';
 import Music from '@/components/music.vue';
 import vibox from '@/assets/vibox.png'
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'vue-router';
 
 const text = ref('Welcome to Vibebox'.split(''));
 const showText = ref(false);
+const authStore = useAuthStore();
+const router = useRouter();
+const isAuthenticated = computed(() => !!authStore.token);
+
+const navigateToLogin = (route) => {
+    router.push(route);
+};
 
 onMounted(() => {
     showText.value = true;
