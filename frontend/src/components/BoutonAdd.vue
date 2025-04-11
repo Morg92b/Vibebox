@@ -160,11 +160,6 @@ async function deletePlaylist(playlistId) {
         console.error("Erreur lors de la suppression de la playlist:", error);
     }
 };
-
-
-
-
-
 </script>
 
 <style scoped>

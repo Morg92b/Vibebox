@@ -275,3 +275,24 @@ module.exports.getAllPlaylists = async (req, res) => {
         res.status(500).json({ error: "Impossible de récupérer les playlists" });
     }
 };
+
+module.exports.getPlaylistsByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "ID utilisateur invalide." });
+        }
+
+        const playlists = await Playlist.find({ user: userId }).sort({ createdAt: -1 });
+
+        if (!playlists.length) {
+            return res.status(404).json({ error: "Aucune playlist trouvée pour cet utilisateur." });
+        }
+
+        res.status(200).json(playlists);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des playlists de l'utilisateur :", error.message);
+        res.status(500).json({ error: "Impossible de récupérer les playlists de cet utilisateur." });
+    }
+};

@@ -1,13 +1,12 @@
 <template>
     <div class="playlists-container">
-        <h2>Playlists des utilisateurs</h2>
+        <h2>Playlists de {{ username }}</h2>
 
         <div v-if="loading" class="loading">Chargement en cours...</div>
 
         <div v-else-if="error" class="error">
             Erreur lors du chargement des playlists: {{ error }}
         </div>
-
         <div v-else>
             <div class="controls">
                 <div class="sort-options">
@@ -35,13 +34,7 @@
                     <div v-for="playlist in paginatedPlaylists" :key="playlist._id" class="playlist-card-horizontal">
                         <div class="playlist-header">
                             <h3>{{ playlist.name }}</h3>
-                            <p class="user-info">
-                                Posté par
-                                <router-link :to="`/user/${playlist.user._id}`" class="user-link">
-                                    {{ getUsername(playlist.user) }}
-                                </router-link>
-                                le {{ formatDate(playlist.createdAt) }}
-                            </p>
+                            <p class="user-info">Posté le {{ formatDate(playlist.createdAt) }}</p>
                         </div>
 
                         <div class="playlist-cover">
@@ -69,54 +62,76 @@
     </div>
 </template>
 
+
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
-import { useAuthStore } from '@/stores/authStore'
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/authStore';
 
-// État réactif
-const playlists = ref([])
-const usersCache = ref({})
-const loading = ref(true)
-const error = ref(null)
-const sortBy = ref('date')
-const currentPage = ref(0)
-const itemsPerPage = 6
-const authStore = useAuthStore()
+const route = useRoute();
+const authStore = useAuthStore();
+const playlists = ref([]);
+const username = ref('');
+const loading = ref(true);
+const error = ref(null);
+const sortBy = ref('date');
+const currentPage = ref(0);
+const itemsPerPage = 6;
 
-// Tri et pagination
-const sortedPlaylists = computed(() => {
-    const playlistsCopy = [...playlists.value]
-    switch (sortBy.value) {
-        case 'date': return playlistsCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        case 'name': return playlistsCopy.sort((a, b) => a.name.localeCompare(b.name))
-        case 'likes': return playlistsCopy.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
-        default: return playlistsCopy
+// Récupération des playlists de l'utilisateur
+const fetchUserPlaylists = async () => {
+    try {
+        const userId = route.params.userId?.toString();
+        console.log("User ID récupéré:", userId);
+
+        if (!userId) {
+            error.value = "ID utilisateur invalide.";
+            return;
+        }
+
+        const response = await axios.get(`http://localhost:5500/api/spotify/playlist/user/${encodeURIComponent(userId)}`);
+        playlists.value = response.data;
+
+        console.log("Données reçues:", response.data);
+
+        if (response.data.length > 0 && response.data[0].user && response.data[0].user.username) {
+            username.value = response.data[0].user.username;
+        } else {
+            const userResponse = await axios.get(`http://localhost:5500/api/auth/getUser/${userId}`);
+            username.value = userResponse.data?.username || "Utilisateur inconnu";
+        }
+
+    } catch (err) {
+        error.value = err.response?.data?.error || "Impossible de récupérer les playlists";
+    } finally {
+        loading.value = false;
     }
-})
+};
 
-const totalPages = computed(() => Math.ceil(sortedPlaylists.value.length / itemsPerPage))
+
+
+
+//Tri et pagination
+const sortedPlaylists = computed(() => {
+    const playlistsCopy = [...playlists.value];
+    switch (sortBy.value) {
+        case 'date': return playlistsCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        case 'name': return playlistsCopy.sort((a, b) => a.name.localeCompare(b.name));
+        case 'likes': return playlistsCopy.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+        default: return playlistsCopy;
+    }
+});
+
+const totalPages = computed(() => Math.ceil(sortedPlaylists.value.length / itemsPerPage));
 const paginatedPlaylists = computed(() => {
-    const start = currentPage.value * itemsPerPage
-    return sortedPlaylists.value.slice(start, start + itemsPerPage)
-})
+    const start = currentPage.value * itemsPerPage;
+    return sortedPlaylists.value.slice(start, start + itemsPerPage);
+});
 
-const nextPage = () => currentPage.value < totalPages.value - 1 && currentPage.value++
-const prevPage = () => currentPage.value > 0 && currentPage.value--
-const resetPagination = () => currentPage.value = 0
-
-// Fonctions utilitaires
-const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })
-}
-
-const getUsername = (user) => {
-    return typeof user === 'object' ? user.username : 'Utilisateur inconnu'
-}
+const nextPage = () => currentPage.value < totalPages.value - 1 && currentPage.value++;
+const prevPage = () => currentPage.value > 0 && currentPage.value--;
+const resetPagination = () => currentPage.value = 0;
 
 // Gestion des likes
 const userLikedPlaylist = (playlistId) => {
@@ -139,7 +154,7 @@ const toggleLike = async (playlistId) => {
         const hasLiked = userLikedPlaylist(playlistId);
         const endpoint = hasLiked ? 'unlike' : 'like-playlist';
 
-        const response = await axios.patch(
+        await axios.patch(
             `http://localhost:5500/api/spotify/playlist/${endpoint}`,
             {
                 userId: authStore.userId,
@@ -151,8 +166,6 @@ const toggleLike = async (playlistId) => {
                 }
             }
         );
-
-        // Mise à jour optimiste de l'UI
         const updatedPlaylists = [...playlists.value];
         const playlistIndex = updatedPlaylists.findIndex(p => p._id === playlistId);
 
@@ -172,43 +185,20 @@ const toggleLike = async (playlistId) => {
     } catch (err) {
         console.error("Erreur like/unlike:", err);
         error.value = err.response?.data?.error || "Erreur lors de la mise à jour";
-        await fetchPlaylists();
+        await fetchUserPlaylists();
     }
 };
 
-// Récupération des données
-const fetchPlaylists = async () => {
-    try {
-        loading.value = true
-        error.value = null
-
-        const [playlistsRes, usersRes] = await Promise.all([
-            axios.get('http://localhost:5500/api/spotify/playlist/getAllPlaylist', {
-                headers: authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}
-            }),
-            axios.post('http://localhost:5500/api/auth/getUsersByIds', {
-                userIds: [...new Set(playlists.value.map(p => p.user))]
-            })
-        ])
-
-        playlists.value = playlistsRes.data
-        usersRes.data.forEach(user => usersCache.value[user._id] = user)
-    } catch (err) {
-        error.value = err.response?.data?.error || err.message
-    } finally {
-        loading.value = false
-    }
-}
-
-// Initialisation
-onMounted(() => {
-    if (authStore.isAuthenticated || !authStore.requiresAuth) {
-        fetchPlaylists()
-    } else {
-        error.value = "Veuillez vous connecter"
-    }
-})
+const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+onMounted(fetchUserPlaylists);
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
@@ -223,17 +213,6 @@ onMounted(() => {
     margin-top: 60px;
 }
 
-.user-link {
-    color: #1a5e9c;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.user-link:hover {
-    text-decoration: underline;
-    color: #6de6f0;
-}
-
 
 h2 {
     text-align: center;
@@ -244,13 +223,11 @@ h2 {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: black;
-    /* Couleur par défaut en mode clair */
 }
 
 @media (prefers-color-scheme: dark) {
     h2 {
         color: white;
-        /* Change en blanc en mode sombre */
     }
 }
 
@@ -458,7 +435,6 @@ h2 {
         padding-bottom: 10px;
     }
 }
-
 
 @media (max-width: 375px) {
     .playlist-card-horizontal {

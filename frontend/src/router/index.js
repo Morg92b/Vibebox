@@ -5,6 +5,7 @@ import Register from '@/views/Register.vue';
 import Vibe from '@/views/Vibe.vue';
 import Informations from '@/views/Informations.vue';
 import NotFound from '@/views/NotFound.vue';
+import Vibeuser from '@/views/Vibeuser.vue';
 //import NotFound from '@/views/NotFound.vue';
 
 
@@ -59,6 +60,15 @@ const routes = [
       title: 'Vibebox'
     }
   },
+  {
+    path: '/user/:userId',
+    name: 'UserPlaylists',
+    component: Vibeuser,
+    meta: {
+      requiresAuth: true,
+      title: 'Vibebox - Playlists utilisiteur'
+    }
+  }
 ];
 
 const router = createRouter({

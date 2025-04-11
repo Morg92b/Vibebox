@@ -1,5 +1,10 @@
 <template>
     <section class="log">
+        <h1>Mises à jour du 11/04/2025</h1>
+        <ul>
+            <li>Nouvelle fonctionnalité playlist par utilisateur ajoutée</li>
+            <li>Optimisation de l'utilisateur</li>
+        </ul>
         <h1>Mises à jour du 07/04/2025</h1>
         <ul>
             <li>Nouvelle fonctionnalité Like ajoutée</li>
