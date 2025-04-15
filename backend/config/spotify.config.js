@@ -54,7 +54,7 @@ module.exports.handleSpotifyCallback = async (req, res) => {
         console.log("Spotify Access Token:", access_token);
         console.log("Spotify Refresh Token:", refresh_token);
 
-        return res.redirect(`http://localhost:5173/Vibe`);
+        return res.redirect(`https://vibebox-one.vercel.app/Vibe`);
 
     } catch (error) {
         console.error("Erreur lors de l'authentification Spotify", error.response?.data || error.message);
