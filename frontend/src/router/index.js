@@ -48,7 +48,6 @@ const routes = [
     name: 'Informations',
     component: Informations,
     meta: {
-      requiresAuth: true,
       title: 'Vibebox Informations'
     }
   },
