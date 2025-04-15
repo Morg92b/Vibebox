@@ -1,7 +1,7 @@
 <template>
     <section class="about">
         <h1>À propos</h1>
-        <p>Vibebox est bien plus qu’un simple projet.</p>
+        <p>Pourquoi Vibebox ?</p>
         <p>C’est une idée née de ma passion pour la musique et mon amour du
             code. À travers ce site, je souhaite créer un espace où chacun peut partager ses playlists Spotify,
             découvrir de nouveaux sons et surtout, mettre en avant les artistes qui méritent d’être entendus.

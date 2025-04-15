@@ -9,6 +9,7 @@
                     :class="{ 'fade-in': true, 'show': isFirstCardsMounted }" />
             </div>
             <div class="content-wrapper">
+                <Important />
                 <About />
                 <Log />
             </div>
@@ -25,6 +26,7 @@ import Footer from '@/components/Footer.vue';
 import About from '@/components/About.vue';
 import Log from '@/components/Log.vue';
 import Carteinfo from '@/components/Carteinfo.vue';
+import Important from '@/components/Important.vue';
 
 const people = [
     { name: 'Morgan', role: 'Developper fullstack', photo: 'morgan', github: 'https://github.com/Morg92b', linkedin: 'https://www.linkedin.com/in/morgan-bouaziz-50a2811b6/' },
