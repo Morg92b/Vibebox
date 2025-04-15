@@ -8,7 +8,9 @@ Designed as a musical community space, Vibebox was born from the desire to combi
 
 Join the community, share your vibes, and feel the rhythm together!
 
-👉 Official website: **[Vibebox](http)** _(Currently in deployment – launching in 7 days)_
+👉 Official website: [Vibebox](https://vibebox-one.vercel.app/)
+
+> ⚠️ **IMPORTANT**: Linking a Spotify account requires authorization from their API. The request is currently pending. In the meantime, please contact me directly to grant the necessary access.
 
 ---
 
