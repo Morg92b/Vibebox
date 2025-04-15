@@ -33,6 +33,8 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "../stores/authStore";
 import { refreshSpotifyToken } from "../stores/authService";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5500";
+
 const isPlaylistVisible = ref(false);
 const playlists = ref([]);
 const authStore = useAuthStore();
@@ -61,7 +63,7 @@ onMounted(() => {
 async function fetchUserPlaylists() {
     try {
 
-        let response = await fetch("http://localhost:5500/api/spotify/playlist", {
+        let response = await fetch(`${BASE_URL}/api/spotify/playlist`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -77,7 +79,7 @@ async function fetchUserPlaylists() {
             console.warn("Token expiré, rafraîchissement en cours...");
             await refreshSpotifyToken(userId, refreshToken);
 
-            response = await fetch("http://localhost:5500/api/spotify/playlist", {
+            response = await fetch(`${BASE_URL}/api/spotify/playlist`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -112,7 +114,7 @@ async function fetchUserPlaylists() {
 
 async function postPlaylist(playlistId) {
     try {
-        const response = await fetch("http://localhost:5500/api/spotify/playlist/post", {
+        const response = await fetch(`${BASE_URL}/api/spotify/playlist/post`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -136,7 +138,7 @@ async function postPlaylist(playlistId) {
 
 async function deletePlaylist(playlistId) {
     try {
-        const response = await fetch("http://localhost:5500/api/spotify/playlist/delete", {
+        const response = await fetch(`${BASE_URL}/api/spotify/playlist/delete`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

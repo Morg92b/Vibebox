@@ -69,6 +69,8 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5500";
+
 const route = useRoute();
 const authStore = useAuthStore();
 const playlists = ref([]);
@@ -90,7 +92,7 @@ const fetchUserPlaylists = async () => {
             return;
         }
 
-        const response = await axios.get(`http://localhost:5500/api/spotify/playlist/user/${encodeURIComponent(userId)}`);
+        const response = await axios.get(`${BASE_URL}/api/spotify/playlist/user/${encodeURIComponent(userId)}`);
         playlists.value = response.data;
 
         console.log("Données reçues:", response.data);
@@ -98,7 +100,7 @@ const fetchUserPlaylists = async () => {
         if (response.data.length > 0 && response.data[0].user && response.data[0].user.username) {
             username.value = response.data[0].user.username;
         } else {
-            const userResponse = await axios.get(`http://localhost:5500/api/auth/getUser/${userId}`);
+            const userResponse = await axios.get(`${BASE_URL}/api/auth/getUser/${userId}`);
             username.value = userResponse.data?.username || "Utilisateur inconnu";
         }
 
@@ -155,7 +157,7 @@ const toggleLike = async (playlistId) => {
         const endpoint = hasLiked ? 'unlike' : 'like-playlist';
 
         await axios.patch(
-            `http://localhost:5500/api/spotify/playlist/${endpoint}`,
+            `${BASE_URL}/api/spotify/playlist/${endpoint}`,
             {
                 userId: authStore.userId,
                 playlistId

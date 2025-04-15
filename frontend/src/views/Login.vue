@@ -21,7 +21,7 @@ import { login } from '../stores/authService';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/authStore';
 import Background from '@/components/Background.vue';
-import Footer from '@/components/Footer.vue'; // Import ajouté
+import Footer from '@/components/Footer.vue';
 
 const email = ref('');
 const password = ref('');

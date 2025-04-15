@@ -74,6 +74,8 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5500";
+
 // État réactif
 const playlists = ref([])
 const usersCache = ref({})
@@ -140,7 +142,7 @@ const toggleLike = async (playlistId) => {
         const endpoint = hasLiked ? 'unlike' : 'like-playlist';
 
         const response = await axios.patch(
-            `http://localhost:5500/api/spotify/playlist/${endpoint}`,
+            `${BASE_URL}/api/spotify/playlist/${endpoint}`,
             {
                 userId: authStore.userId,
                 playlistId
@@ -183,10 +185,10 @@ const fetchPlaylists = async () => {
         error.value = null
 
         const [playlistsRes, usersRes] = await Promise.all([
-            axios.get('http://localhost:5500/api/spotify/playlist/getAllPlaylist', {
+            axios.get(`${BASE_URL}/api/spotify/playlist/getAllPlaylist`, {
                 headers: authStore.token ? { Authorization: `Bearer ${authStore.token}` } : {}
             }),
-            axios.post('http://localhost:5500/api/auth/getUsersByIds', {
+            axios.post(`${BASE_URL}/api/auth/getUsersByIds`, {
                 userIds: [...new Set(playlists.value.map(p => p.user))]
             })
         ])

@@ -10,6 +10,8 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '../stores/authStore';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:5500";
+
 const authStore = useAuthStore()
 const isLinked = ref(false)
 const isLoading = ref(false)
@@ -19,7 +21,7 @@ const checkSpotifyConnection = async () => {
     if (!authStore.userId) return;
 
     try {
-        const response = await axios.get(`http://localhost:5500/api/auth/${authStore.userId}/spotify`);
+        const response = await axios.get(`${BASE_URL}/api/auth/${authStore.userId}/spotify`);
         console.log("Réponse API Spotify:", response.data);
 
         isLinked.value = response.data.linked;
@@ -53,7 +55,7 @@ const handleSpotifyConnection = async () => {
 
 const linkSpotifyAccount = async () => {
     try {
-        const response = await axios.get(`http://localhost:5500/api/spotify/login?userId=${authStore.userId}`);
+        const response = await axios.get(`${BASE_URL}/api/spotify/login?userId=${authStore.userId}`);
         console.log("URL de redirection Spotify :", response.data.url);
         window.location.href = response.data.url;
     } catch (error) {
@@ -63,7 +65,7 @@ const linkSpotifyAccount = async () => {
 
 const unlinkSpotifyAccount = async () => {
     try {
-        await axios.post('http://localhost:5500/api/spotify/unlink', {
+        await axios.post(`${BASE_URL}/api/spotify/unlink`, {
             userId: authStore.userId
         })
     } catch (error) {
