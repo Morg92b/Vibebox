@@ -58,9 +58,11 @@ module.exports.handleSpotifyCallback = async (req, res) => {
 
     } catch (error) {
         console.error("Erreur lors de l'authentification Spotify", error.response?.data || error.message);
-        return res.status(500).json({ error: "Impossible d'obtenir le token Spotify" });
-    }
-};
+        return res.status(500).json({
+            error: "Impossible d'obtenir le token Spotify",
+            details: error.response?.data || error.message});
+        }
+    };
 
 
 // Fonction pour désunir les deux comptes
