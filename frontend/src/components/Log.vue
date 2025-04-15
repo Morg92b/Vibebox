@@ -22,6 +22,7 @@
     padding: 20px;
     background: var(--color-background-soft);
     border-radius: 8px;
+    border-left: 5px solid #1a5e9c;
 }
 
 h1 {
