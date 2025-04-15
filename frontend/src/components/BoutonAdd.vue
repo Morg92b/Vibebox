@@ -43,7 +43,7 @@ const userId = authStore.userId;
 onMounted(() => {
     // Rafraîchir le token toutes les 50 minutes
     setInterval(async () => {
-        await refreshSpotifyToken();
+        await refreshSpotifyToken(userId, refreshToken);
     }, 50 * 60 * 1000);
 });
 
@@ -72,11 +72,10 @@ async function fetchUserPlaylists() {
 
         console.log("Token actuel:", authStore.token);
         console.log("User ID:", userId);
-        console.log("Refresh Token:", refreshToken);
 
         if (response.status === 401) {
             console.warn("Token expiré, rafraîchissement en cours...");
-            await refreshSpotifyToken();
+            await refreshSpotifyToken(userId, refreshToken);
 
             response = await fetch("http://localhost:5500/api/spotify/playlist", {
                 method: "GET",

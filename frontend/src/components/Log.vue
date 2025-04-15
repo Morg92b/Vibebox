@@ -1,5 +1,9 @@
 <template>
     <section class="log">
+        <h1>Mises à jour du 15/04/2025</h1>
+        <ul>
+            <li>Optimisation des performances du site</li>
+        </ul>
         <h1>Mises à jour du 11/04/2025</h1>
         <ul>
             <li>Nouvelle fonctionnalité playlist par utilisateur ajoutée</li>

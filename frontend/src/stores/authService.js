@@ -10,10 +10,12 @@ export const login = async (credentials, authStore, router) => {
         
         if (response.data.token && response.data.username && response.data.userId) {
             authStore.login(
-                response.data.username, 
-                response.data.token, 
-                response.data.userId
-            );
+                response.data.username,
+                response.data.token,
+                response.data.userId,
+                response.data.spotifyAccessToken,
+                response.data.spotifyRefreshToken
+            );            
             
             // Initialiser immédiatement après le login
             authStore.initialize();
@@ -104,35 +106,23 @@ export const updateUserProfile = async (userData) => {
     }
 };
 
-export const refreshSpotifyToken = async () => {
+export const refreshSpotifyToken = async (userId, refreshToken) => {
+  if (!userId || !refreshToken) {
+    throw new Error("L'ID de l'utilisateur et le refresh token sont requis.");
+  }
+
+  try {
+    const response = await axios.post(`${BASE_URL}/api/spotify/refreshtoken`, {
+      userId,
+      refreshToken
+    });
+
     const authStore = useAuthStore();
-    const userId = authStore.userId;
-    const refreshToken = authStore.spotifyRefreshToken;
-
-    if (!userId || !refreshToken) {
-        throw new Error("L'ID de l'utilisateur et le refresh token sont requis.");
-    }
-
-    try {
-        const response = await axios.post(`${BASE_URL}/api/spotify/refreshtoken`, {
-            userId,
-            refresh_token: refreshToken,
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authStore.token}`,
-            },
-        });
-
-        if (response.data.access_token) {
-            authStore.setSpotifyToken(response.data.access_token, refreshToken);
-            console.log("Nouveau token Spotify récupéré :", response.data.access_token);
-        } else {
-            throw new Error("Aucun token reçu.");
-        }
-    } catch (error) {
-        console.error("Erreur lors du rafraîchissement du token:", error.response?.data || error.message);
-        throw error;
-    }
+    authStore.spotifyAccessToken = response.data.access_token;
+  } catch (err) {
+    console.error("Erreur lors du rafraîchissement du token Spotify :", err);
+    throw err;
+  }
 };
+
 
