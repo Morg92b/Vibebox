@@ -49,11 +49,15 @@
                                     {{ userLikedPlaylist(playlist._id) ? '❤️' : '🤍' }}
                                 </button>
                                 <span>{{ playlist.likes?.length || 0 }}</span>
+                                <CommentSection @toggle-comments="() => toggleComments(playlist._id)" />
                             </div>
                             <a :href="`https://open.spotify.com/playlist/${playlist.spotifyId}`" target="_blank"
                                 class="spotify-link">
                                 Écouter
                             </a>
+                        </div>
+                        <div v-if="showCommentsMap[playlist._id]" class="comments-zone">
+                            <Comments :playlistId="playlist._id" />
                         </div>
                     </div>
                 </div>
@@ -68,8 +72,16 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
+import CommentSection from '@/components/CommentSection.vue'
+import Comments from './CommentDisplay.vue'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5500";
+
+const showCommentsMap = ref({});
+
+function toggleComments(playlistId) {
+    showCommentsMap.value[playlistId] = !showCommentsMap.value[playlistId];
+}
 
 const route = useRoute();
 const authStore = useAuthStore();
