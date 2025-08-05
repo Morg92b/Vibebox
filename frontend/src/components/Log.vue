@@ -1,5 +1,9 @@
 <template>
     <section class="log">
+        <h1>Mises à jour du 05/08/2025</h1>
+        <ul>
+            <li>Ajout des commentaires</li>
+        </ul>
         <h1>Mises à jour du 15/04/2025</h1>
         <ul>
             <li>Optimisation des performances du site</li>
